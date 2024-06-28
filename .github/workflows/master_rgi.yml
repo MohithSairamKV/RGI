@@ -28,10 +28,14 @@ jobs:
           cd my-backend
           npm install
 
+      - name: Build frontend
+        run: |
+          cd my-frontend
+          npm run build
+
       - name: Zip artifact for deployment
         run: |
-          cd ..
-          zip release.zip ./* -r
+          zip -r release.zip . -x "*.git*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -50,7 +54,7 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
       - name: Login to Azure
         uses: azure/login@v1
         with:

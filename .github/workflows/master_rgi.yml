@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+          
+      - name: Install dependencies for frontend
         run: |
           cd my-frontend
           npm install
@@ -25,6 +27,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+          
+      - name: Install dependencies for backend
         run: |
           cd my-backend
           npm install

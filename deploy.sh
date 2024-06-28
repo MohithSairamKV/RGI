@@ -12,12 +12,10 @@ nohup npm start &
 
 # Navigate back to the root and install frontend dependencies
 cd ..
+cd my-frontend
 npm install
 
 # Build the frontend application
 npm run build
-
-# Copy the build output to a suitable location for serving
-cp -r build/* /home/site/wwwroot
 
 echo "Deployment completed successfully."

@@ -13,17 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js version for frontend
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-
-      - name: Install dependencies for frontend
         run: |
           cd my-frontend
           npm install
 
-      - name: Install dependencies for backend
+      - name: Set up Node.js version for backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
         run: |
           cd my-backend
           npm install

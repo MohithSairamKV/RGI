@@ -1,0 +1,649 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* The root element should flex to fill the remaining space */
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main content wrapper should flex to fill the remaining space */
+.main-content {
+  flex: 1;
+}
+/* Styles for the product container */
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Increased min-width */
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+/* Styles for individual product cards */
+.product-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  cursor: pointer; /* Indicates that the card is interactive */
+}
+
+/* Hover effect to elevate card and change background */
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 16px rgba(0,0,0,0.2);
+  background-color: #f9f9ff; /* Subtle background color change on hover */
+}
+
+.product-card img {
+  width: 100%;
+  height: 180px; /* Increased height */
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.3s ease; /* Smooth transform transition */
+}
+
+.product-card img:hover {
+  transform: scale(1.05); /* Slightly enlarges the image on hover */
+}
+
+.product-card h3 {
+  margin: 12px 0 8px;
+  font-size: 20px; /* Increased font size */
+  font-weight: bold;
+  color: #333;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.product-card h3:hover {
+  color: #0056b3; /* Change color on hover to match the theme */
+}
+
+.product-card p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 16px; /* Increased font size */
+}
+
+.product-card button {
+  padding: 12px 18px; /* Increased padding */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.product-card button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Small lift effect for the button */
+}
+
+
+/* Popup styles for modals, etc. */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-inner {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+}
+
+/* Inputs and buttons outside of specific components */
+input[type="text"], input[type="file"] {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: calc(100% - 22px);
+}
+
+
+
+
+
+.file-input {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* Popup background */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it sits above other content */
+}
+
+/* Popup inner container */
+.popup-inner {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 90%; /* Responsive width */
+  max-width: 500px; /* Maximum width */
+  text-align: center;
+}
+
+/* Styling for titles inside the popup */
+.popup h3 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Styling for product details like SKU */
+.popup p {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+/* Input fields styling */
+.popup input[type="number"] {
+  width: 80%; /* Responsive width, centered */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* Error message styling */
+.popup .error {
+  color: #ff0000; /* Red color for errors */
+  margin: 10px 0;
+}
+
+/* Buttons styling within the popup */
+.popup button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.popup button:hover {
+  background-color: #0056b3; /* Darker shade on hover for better interaction feedback */
+}
+
+/* Additional styling for the close button to differentiate from the save button */
+.popup button:last-child {
+  background-color: #6c757d; /* Gray background for less prominent action */
+}
+
+.popup button:last-child:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+}
+
+/* Add these styles to your CSS file, e.g., App.css */
+
+.success-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-popup-inner {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.success-icon {
+  font-size: 50px;
+  color: green;
+}
+
+.success-popup button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.success-popup button:hover {
+  background-color: darkgreen;
+}
+
+/* Header Styles */
+header {
+  background: linear-gradient(90deg, #4b6cb7, #182848);
+  padding: 10px 20px; /* Increased padding for better spacing */
+  display: flex;
+  align-items: center;
+  color: #fff;
+  height: 100px; /* Fixed header height */
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 40px; /* Move the logo 20px to the right */
+}
+
+.header-logo img {
+  height: 60px; /* Adjust the height as needed */
+  width: auto;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+
+.header-greeting {
+  margin-right: 30px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.header-icon {
+  margin-right: 30px;
+  font-size: 20px;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.header-icon:hover {
+  color: #ffeb3b; /* Change color on hover */
+}
+
+button.header-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+button.header-icon:hover {
+  color: #ffeb3b; /* Change color on hover */
+}
+
+
+/* Search Bar Styles */
+.search-bar {
+  width: 100%;
+  max-width: 500px; /* Increased max-width for better usability */
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* Filter Dropdown Styles */
+.brand-filter {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+
+/* Search Bar Styles */
+.search-bar {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Filter Dropdown Styles */
+.brand-filter {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* Adjusting the position of search bar and filter */
+.header-logo img {
+  height: 200px; /* Adjust the height as needed */
+  width: auto;
+}
+
+
+.header-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Other existing styles */
+.profile {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.profile form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile form div {
+  margin-bottom: 15px;
+}
+
+.profile form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.profile form input[type="text"],
+.profile form input[type="email"],
+.profile form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.profile form button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.profile form button:hover {
+  background-color: #0056b3;
+}
+
+.profile form .error {
+  color: red;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.product-card.special-deal-card {
+  position: relative;
+  border: 2px solid #f1c40f; /* Highlight special deal cards with a yellow border */
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+
+/* Styles specific to OrderList component */
+.orderlist {
+  text-align: center;
+  margin: 20px 0;
+  color: #333;
+  font-size: 2em;
+}
+
+table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+table th, table td {
+  padding: 12px;
+  text-align: left;
+}
+
+table th {
+  background-color: #007BFF;
+  color: white;
+}
+
+table td {
+  border-bottom: 1px solid #ddd;
+}
+
+table tr {
+  transition: all 0.2s ease;
+}
+
+table tr:hover {
+  transform: translateX(10px);
+  background-color: #f1f1f1;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Ensure the body and html take full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content wrapper to take remaining space */
+#root {
+  flex: 1; /* Take up remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Existing footer styles with necessary adjustments */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #343a40;
+  color: #fff;
+  width: 100%;
+  margin-top: auto;
+}
+
+footer div {
+  flex: 1 1 200px;
+  margin-bottom: 20px;
+}
+
+footer h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+footer ul {
+  list-style: none;
+  padding: 0;
+  font-size: 16px;
+}
+
+footer ul li {
+  margin-bottom: 10px;
+}
+
+footer a {
+  color: lightblue;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+footer p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+footer a {
+  color: lightblue;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.home-header {
+  background: linear-gradient(90deg, #4b6cb7, #182848);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  height: 100px; /* Fixed header height */
+  justify-content: space-between;
+}
+
+.home-header-logo {
+  height: 800px;
+  max-height: 250%; /* Adjust the height as needed */
+}
+
+.home-header-text-container {
+  flex: 1; /* This will take up all the available space except for the logo */
+  display: flex;
+  justify-content: center;
+}
+
+.home-header-text {
+  font-size: 16px;
+  margin: 0;
+  align-self: center;
+}
+
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-content, #printable-content * {
+    visibility: visible;
+  }
+
+  #printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .updateStatusContainer, #footer {
+    display: none;
+  }
+}
+

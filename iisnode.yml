@@ -1,0 +1,3 @@
+loggingEnabled: true
+devErrorsEnabled: true
+nodeProcessCommandLine: "node my-backend/server.js"

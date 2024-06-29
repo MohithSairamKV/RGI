@@ -30,15 +30,9 @@ jobs:
           cd my-backend
           npm install
 
-      - name: Prepare deployment package
+      - name: Zip artifact for deployment
         run: |
-          mkdir -p deployment/my-frontend
-          mkdir -p deployment/my-backend
-          cp -r my-frontend/build/* deployment/my-frontend/
-          cp my-frontend/package.json deployment/my-frontend/
-          cp -r my-backend/* deployment/my-backend/
-          cp my-backend/package.json deployment/my-backend/
-          zip -r release.zip deployment
+          zip -r release.zip my-frontend/build my-backend
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -58,14 +52,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Display directory structure for debugging
-        run: ls -R deployment
-
-      - name: Check files and permissions
-        run: |
-          find deployment -type f -exec ls -lah {} \;
-          find deployment -type d -exec ls -ld {} \;
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -76,5 +62,5 @@ jobs:
         with:
           app-name: 'RGI'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: deployment
+          package: .
           slot-name: production

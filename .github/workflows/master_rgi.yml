@@ -35,7 +35,7 @@ jobs:
           mkdir -p deployment/my-frontend
           mkdir -p deployment/my-backend
           cp -r my-frontend/build/* deployment/my-frontend/
-          cp -r my-frontend/package.json deployment/my-frontend/
+          cp my-frontend/package.json deployment/my-frontend/
           cp -r my-backend/* deployment/my-backend/
           cp my-backend/package.json deployment/my-backend/
           zip -r release.zip deployment
@@ -61,6 +61,11 @@ jobs:
       - name: Display directory structure for debugging
         run: ls -R deployment
 
+      - name: Check files and permissions
+        run: |
+          find deployment -type f -exec ls -lah {} \;
+          find deployment -type d -exec ls -ld {} \;
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -72,3 +77,4 @@ jobs:
           app-name: 'RGI'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: deployment
+          slot-name: production

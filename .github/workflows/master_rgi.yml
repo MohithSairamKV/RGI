@@ -32,7 +32,10 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          zip -r release.zip my-frontend/build my-backend
+          mkdir -p deployment
+          cp -r my-frontend/build deployment/
+          cp -r my-backend deployment/
+          zip -r release.zip deployment
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

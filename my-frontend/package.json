@@ -16,13 +16,11 @@
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
-  
-    "scripts": {
-      "start": "react-scripts start",
-      "build": "react-scripts build",
-      "heroku-postbuild": "npm run build"
-    },
-  
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "heroku-postbuild": "npm run build"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -49,7 +47,6 @@
     "tailwindcss": "^3.4.3"
   },
   "engines": {
-  "node": ">=14.0.0"
-}
-
+    "node": ">=14.0.0"
+  }
 }

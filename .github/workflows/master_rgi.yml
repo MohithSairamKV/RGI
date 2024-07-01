@@ -24,11 +24,13 @@ jobs:
           npm install
           CI=false npm run build --if-present
           CI=false npm run test --if-present
+          cd ..
 
       - name: Install backend dependencies
         run: |
           cd my-backend
           npm install
+          cd ..
 
       - name: Zip artifact for deployment
         run: |

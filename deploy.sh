@@ -1,20 +1,20 @@
 #!/bin/bash
 
+echo "Deploy script started..."
 
+# Navigate to the backend directory
+cd my-backend || exit
 
-# Navigate to the backend folder and install dependencies
-cd my-backend
+# Install backend dependencies
 npm install
 
-# Start the backend server in the background
-nohup npm start &
+# Start the server
+pm2 start server.js
 
-# Navigate back to the root and install frontend dependencies
-cd ..
-cd my-frontend
-npm install
+# Navigate to the frontend directory
+cd ../my-frontend || exit
 
-# Build the frontend application
-npm run build
+# Serve the frontend build
+npx serve -s build
 
-echo "Deployment completed successfully."
+echo "Deploy script completed."

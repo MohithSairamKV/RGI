@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Load environment variables from .env file if needed
+if [ -f .env ]; then
+  export $(cat .env | sed 's/#.*//g' | xargs)
+fi
+
 # Navigate to the frontend directory
 cd my-frontend
 

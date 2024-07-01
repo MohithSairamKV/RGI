@@ -31,8 +31,12 @@ jobs:
           cd my-backend
           npm install
 
+      - name: Make deploy.sh executable
+        run: chmod +x deploy.sh
+
       - name: Zip artifact for deployment
         run: |
+          chmod +x deploy.sh
           zip -r release.zip my-frontend/build my-backend deploy.sh
 
       - name: Upload artifact for deployment job

@@ -34,7 +34,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          zip -r release.zip my-frontend/build my-backend
+          zip -r release.zip my-frontend/build my-backend deploy.sh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -54,6 +54,9 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Make deploy.sh executable
+        run: chmod +x deploy.sh
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -66,3 +69,6 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
           slot-name: production
+
+      - name: Execute deployment script
+        run: ./deploy.sh

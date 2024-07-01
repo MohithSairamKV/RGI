@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Exit on any error
-set -e
+
 
 # Navigate to the backend folder and install dependencies
 cd my-backend

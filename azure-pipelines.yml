@@ -7,14 +7,14 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '20.x'
+    versionSpec: '14.x'
   displayName: 'Install Node.js'
 
 - script: |
     cd my-frontend
     npm install
     npm run build
-  displayName: 'Install and build frontend'
+  displayName: 'Build frontend'
 
 - script: |
     cd my-backend
@@ -23,24 +23,25 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/release.zip'
     replaceExistingArchive: true
-  displayName: 'Archive files for deployment'
+  displayName: 'Archive files'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/release.zip'
-    artifactName: 'drop'
-  displayName: 'Publish Artifact: drop'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifact'
 
-- task: AzureWebApp@1
+- task: AzureRmWebAppDeployment@4
   inputs:
-    azureSubscription: '<Your Azure subscription>'
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'AzureWebAppServiceConnection'
     appType: 'webApp'
-    appName: '<Your App Service Name>'
+    WebAppName: 'RGI'
     package: '$(Build.ArtifactStagingDirectory)/release.zip'
-    deploymentMethod: 'runFromPackage'
   displayName: 'Deploy to Azure Web App'

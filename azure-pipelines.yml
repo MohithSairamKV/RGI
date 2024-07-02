@@ -1,0 +1,46 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd my-frontend
+    npm install
+    npm run build
+  displayName: 'Install and build frontend'
+
+- script: |
+    cd my-backend
+    npm install
+  displayName: 'Install backend dependencies'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/release.zip'
+    replaceExistingArchive: true
+  displayName: 'Archive files for deployment'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/release.zip'
+    artifactName: 'drop'
+  displayName: 'Publish Artifact: drop'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: '<Your Azure subscription>'
+    appType: 'webApp'
+    appName: '<Your App Service Name>'
+    package: '$(Build.ArtifactStagingDirectory)/release.zip'
+    deploymentMethod: 'runFromPackage'
+  displayName: 'Deploy to Azure Web App'

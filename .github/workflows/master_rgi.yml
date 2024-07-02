@@ -31,13 +31,16 @@ jobs:
           cd my-backend
           npm install
 
-      - name: Make deploy.sh executable
-        run: chmod +x deploy.sh
-
-      - name: Zip artifact for deployment
+      - name: Create deployment artifact
         run: |
           chmod +x deploy.sh
-          zip -r release.zip my-frontend/build my-backend deploy.sh
+          mkdir -p deploy
+          cp -R my-frontend/build deploy/
+          cp -R my-backend deploy/
+          cp deploy.sh deploy/
+          find deploy -name "node_modules" -type d -exec rm -rf {} +
+          cd deploy
+          zip -r ../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

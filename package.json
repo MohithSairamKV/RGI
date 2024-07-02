@@ -1,0 +1,12 @@
+{
+    "name": "RGI",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "start": "sh deploy.sh"
+    },
+    "engines": {
+      "node": ">=14.0.0 <=20.0.0"
+    }
+  }
+  

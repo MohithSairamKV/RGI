@@ -40,7 +40,10 @@ jobs:
           cp deploy.sh deploy/
           find deploy -name "node_modules" -type d -exec rm -rf {} +
           cd deploy
+          ls -la  # Debugging: List the contents of the deploy directory
           zip -r ../release.zip .
+          ls -la ..  # Debugging: List the contents of the parent directory to check release.zip
+          zipinfo ../release.zip  # Debugging: Check the contents of the release.zip
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

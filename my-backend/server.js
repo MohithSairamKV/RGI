@@ -8,6 +8,7 @@ const router = express.Router();
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure this line is correct
@@ -16,6 +17,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'my-frontend/build')));
+//app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Database configuration
 const config = {
@@ -43,7 +45,7 @@ sql.connect(config).then(pool => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
@@ -57,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Catch-all route to serve the React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'my-frontend/build', 'index.html'));
 });
 app.post('/signup', async (req, res) => {
   console.log('Received signup data:', req.body);

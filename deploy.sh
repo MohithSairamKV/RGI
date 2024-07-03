@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Enable error handling
-set -e
-
 # Navigate to the frontend directory
 cd my-frontend
 
@@ -12,8 +9,8 @@ npm install
 # Build the frontend
 npm run build
 
-# Serve the frontend build on the port specified by Azure
-npx serve -s build -l $PORT &
+# Serve the frontend build
+npx serve -s build -l 3000 --name frontend &
 
 # Navigate to the backend directory
 cd ../my-backend

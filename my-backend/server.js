@@ -15,6 +15,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'my-frontend/build')));
 
 // Database configuration
 const config = {

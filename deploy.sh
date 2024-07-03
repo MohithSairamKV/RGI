@@ -34,9 +34,9 @@ npm install
 echo "Installing PM2..."
 npm install pm2 -g
 
-# Start the backend server using pm2
+# Start the backend server using pm2 and respect the PORT environment variable
 echo "Starting the backend server with PM2..."
-pm2 start server.js --name backend --env production
+pm2 start server.js --name backend -- --port $PORT
 
 # Log end of the script
 echo "Deployment script finished."

@@ -1,0 +1,47 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd my-frontend
+    npm install
+    npm run build
+  displayName: 'Build frontend'
+
+- script: |
+    cd my-backend
+    npm install
+  displayName: 'Install backend dependencies'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/release.zip'
+    replaceExistingArchive: true
+  displayName: 'Archive files'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/release.zip'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifact'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'AzureWebAppServiceConnection'
+    appType: 'webApp'
+    WebAppName: 'RGI'
+    package: '$(Build.ArtifactStagingDirectory)/release.zip'
+  displayName: 'Deploy to Azure Web App'

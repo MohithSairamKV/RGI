@@ -1,20 +1,14 @@
 #!/bin/sh
 
 # Navigate to the frontend directory
-cd my-frontend
+cd /home/site/wwwroot/my-frontend
 
 # Install frontend dependencies and build the project
 npm install
-
-# Check if build script exists in package.json
-if npm run | grep -q 'build'; then
-  npm run build
-else
-  echo "No build script found in package.json"
-fi
+npm run build
 
 # Navigate to the backend directory
-cd ../my-backend
+cd /home/site/wwwroot/my-backend
 
 # Install backend dependencies
 npm install

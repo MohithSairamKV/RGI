@@ -1,28 +1,23 @@
-#!/bin/bash
-
-echo "Starting deployment script..." > /home/site/deploy.log
+#!/bin/sh
 
 # Navigate to the frontend directory
 cd my-frontend
-echo "In frontend directory: $(pwd)" >> /home/site/deploy.log
 
-# Install frontend dependencies
-npm install >> /home/site/deploy.log 2>&1
+# Install frontend dependencies and build the project
+npm install
 
-# Build the frontend
-npm run build >> /home/site/deploy.log 2>&1
-
-# Serve the frontend build
-npx serve -s build -l 3000 --name frontend &
+# Check if build script exists in package.json
+if npm run | grep -q 'build'; then
+  npm run build
+else
+  echo "No build script found in package.json"
+fi
 
 # Navigate to the backend directory
 cd ../my-backend
-echo "In backend directory: $(pwd)" >> /home/site/deploy.log
 
 # Install backend dependencies
-npm install >> /home/site/deploy.log 2>&1
+npm install
 
 # Start the backend server
-node server.js >> /home/site/deploy.log 2>&1
-
-echo "Deployment script finished." >> /home/site/deploy.log
+node server.js

@@ -20,6 +20,7 @@ steps:
     cd my-backend
     npm install
     chmod -R 755 .
+    chmod +x /home/site/wwwroot/deploy.sh
   displayName: 'Install backend dependencies and set permissions'
 
 - script: |

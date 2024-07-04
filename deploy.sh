@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Navigate to the frontend directory
-cd /home/site/wwwroot/my-frontend
+cd my-frontend
 
 # Install frontend dependencies and build the project
 npm install
@@ -14,7 +14,7 @@ if [ ! -d "build" ]; then
 fi
 
 # Navigate to the backend directory
-cd /home/site/wwwroot/my-backend
+cd ../my-backend
 
 # Install backend dependencies
 npm install

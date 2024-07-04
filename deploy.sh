@@ -34,6 +34,4 @@ if [ ! -f "server.js" ]; then
 fi
 echo "server.js file verified"
 
-# Start the backend server
-node server.js
-echo "Backend server started"
+echo "Deployment script completed successfully"

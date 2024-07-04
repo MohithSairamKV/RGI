@@ -14,7 +14,8 @@ steps:
     cd my-frontend
     npm install
     npm run build
-  displayName: 'Install and build frontend'
+    ls -la build  # List the contents of the build directory to verify
+  displayName: 'Install and build frontend, then list build directory'
 
 - script: |
     cd my-backend

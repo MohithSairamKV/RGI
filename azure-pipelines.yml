@@ -25,6 +25,8 @@ steps:
 
 - script: |
     echo "PORT=3000" >> /home/site/wwwroot/.env
+    ls -la /home/site/wwwroot/my-frontend/build  # List contents to ensure files are there
+    ls -la /home/site/wwwroot/my-backend  # List contents to ensure server.js is there
     ./deploy.sh  # Run deploy.sh from the root level
   displayName: 'Run deploy script'
 

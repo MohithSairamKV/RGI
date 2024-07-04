@@ -19,13 +19,12 @@ steps:
 - script: |
     cd my-backend
     npm install
-    chmod +x ../../deploy.sh  # Assuming deploy.sh is in the root directory
+    chmod +x ../deploy.sh  # Ensure deploy.sh has executable permissions
   displayName: 'Install backend dependencies and set permissions'
 
 - script: |
     echo "PORT=3000" >> /home/site/wwwroot/.env
-    cd ../..
-    ./deploy.sh
+    ./deploy.sh  # Run deploy.sh from the root level
   displayName: 'Run deploy script'
 
 - task: ArchiveFiles@2

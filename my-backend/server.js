@@ -16,7 +16,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure 
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'my-frontend/build')));
+app.use(express.static(path.join(__dirname, '../my-frontend/build')));
 //app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Database configuration
@@ -55,11 +55,11 @@ app.use((error, req, res, next) => {
   console.error('Unhandled application error:', error);
   res.status(500).send('Something broke!');
 });
-app.use(express.static(path.join(__dirname, 'client/build')));
+//app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Catch-all route to serve the React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'my-frontend/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
 });
 app.post('/signup', async (req, res) => {
   console.log('Received signup data:', req.body);

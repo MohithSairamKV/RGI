@@ -10,9 +10,11 @@ function CustomerContent({ username }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [excelData, setExcelData] = useState(null);
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:3000/products', {
+            const response = await fetch(`${API_BASE_URL}/products`, {
                 headers: { 'Accept': 'application/json' }
             });
 
@@ -33,7 +35,7 @@ function CustomerContent({ username }) {
 
     const saveExcelDataToDatabase = async (data) => {
         try {
-            const response = await fetch('http://localhost:3001/api/save-excel', {
+            const response = await fetch(`${API_BASE_URL}/api/save-excel`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ function CustomerContent({ username }) {
     const deleteExcelDataFromDatabase = async () => {
         if (window.confirm('Are you sure you want to delete the Excel data?')) {
             try {
-                const response = await fetch('http://localhost:3001/api/delete-excel', {
+                const response = await fetch(`${API_BASE_URL}/api/delete-excel`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) throw new Error('Error deleting Excel data');
@@ -111,7 +113,7 @@ function CustomerContent({ username }) {
                     )
                     .map((product, index) => (
                         <div key={index} className="product-card">
-                            <img src={`http://localhost:3000/${product.img}`} alt={product.Product_Name} />
+                            <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
                             <h3>{product.Product_Name}</h3>
                             <p>Brand: {product.Brand}</p>
                             <p>Quantity Present : {product.quantity_on_hand}</p>

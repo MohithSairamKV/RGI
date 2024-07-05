@@ -5,10 +5,12 @@ const PreviousOrders = ({ username }) => {
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     useEffect(() => {
         const fetchPreviousOrders = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/user/main/previous-orders/${username}`);
+                const response = await fetch(`${API_BASE_URL}/user/main/previous-orders/${username}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -20,7 +22,7 @@ const PreviousOrders = ({ username }) => {
         };
 
         fetchPreviousOrders();
-    }, [username]);
+    }, [username, API_BASE_URL]);
 
     const viewOrderDetails = (orderId) => {
         navigate(`/previous-order-details/${orderId}`);

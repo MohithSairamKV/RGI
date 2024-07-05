@@ -13,9 +13,11 @@ function EmployeeContent() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/employee/products'); // Ensure this matches your backend endpoint
+      const response = await fetch(`${API_BASE_URL}/employee/products`); // Ensure this matches your backend endpoint
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -28,7 +30,7 @@ function EmployeeContent() {
 
   const fetchCustomers = async () => {
     try {
-      const response = await fetch('/employee/customers'); // Ensure this matches your backend endpoint
+      const response = await fetch(`${API_BASE_URL}/employee/customers`); // Ensure this matches your backend endpoint
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -43,7 +45,7 @@ function EmployeeContent() {
     fetchProducts();
     fetchCustomers();
     navigate('/employee/orders'); // Navigate to orders list initially
-  }, []);
+  }, [API_BASE_URL, navigate]);
 
   const handleAddToCartClick = (product) => {
     setSelectedProduct(product);

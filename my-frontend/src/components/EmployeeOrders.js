@@ -50,6 +50,7 @@ const styles = {
 
 function EmployeeOrders() {
   const [orders, setOrders] = useState([]);
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     fetchOrders();
@@ -57,7 +58,7 @@ function EmployeeOrders() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:3000/employee/orders', {
+      const response = await fetch(`${API_BASE_URL}/employee/orders`, {
         headers: { 'Accept': 'application/json' }
       });
       const data = await response.json();

@@ -7,10 +7,12 @@ const OrderList = ({ username }) => {
     const [editQuantityPopup, setEditQuantityPopup] = useState(null);
     const navigate = useNavigate();
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/user/main/orders/${username}`);
+                const response = await fetch(`${API_BASE_URL}/user/main/orders/${username}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -22,7 +24,7 @@ const OrderList = ({ username }) => {
         };
 
         fetchOrders();
-    }, [username]);
+    }, [username, API_BASE_URL]);
 
     const handleBack = () => {
         navigate(-1);
@@ -30,7 +32,7 @@ const OrderList = ({ username }) => {
 
     const EditQuantity = async (sku) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/edit-quantity/${sku}`, {
+            const response = await fetch(`${API_BASE_URL}/api/edit-quantity/${sku}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,10 +43,11 @@ const OrderList = ({ username }) => {
             console.error('Error:', error);
         }
     };
+
     const DeleteProduct = async (sku) => {
         if (window.confirm(`Are you sure you want to delete the product with SKU ${sku}?`)) {
             try {
-                const response = await fetch(`http://localhost:3001/api/delete-order-product/${sku}`, {
+                const response = await fetch(`${API_BASE_URL}/api/delete-order-product/${sku}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -62,11 +65,10 @@ const OrderList = ({ username }) => {
             }
         }
     };
-    
 
     const handleSendOrder = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/user/main/orders/send/${orders[0].OrderID}`, {
+            const response = await fetch(`${API_BASE_URL}/user/main/orders/send/${orders[0].OrderID}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -89,28 +91,27 @@ const OrderList = ({ username }) => {
     };
 
     const handleSaveEditQuantity = async (sku, newQuantity) => {
-    try {
-        const response = await fetch(`http://localhost:3001/api/edit-quantity/${sku}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ newQuantity }),
-        });
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/edit-quantity/${sku}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newQuantity }),
+            });
 
-        if (!response.ok) {
-            const errorText = await response.text();  // Get the error text from the response
-            console.error('Error saving edited quantity:', errorText);
-            throw new Error('Error saving edited quantity: ' + errorText);
+            if (!response.ok) {
+                const errorText = await response.text();  // Get the error text from the response
+                console.error('Error saving edited quantity:', errorText);
+                throw new Error('Error saving edited quantity: ' + errorText);
+            }
+            alert('Quantity updated successfully.');
+        } catch (error) {
+            console.error('Error saving edited quantity:', error);
+            alert('Failed to save edited quantity. Please try again later.');
         }
-        alert('Quantity updated successfully.');
-    } catch (error) {
-        console.error('Error saving edited quantity:', error);
-        alert('Failed to save edited quantity. Please try again later.');
-    }
-    setEditQuantityPopup(null);
-};
-
+        setEditQuantityPopup(null);
+    };
 
     const handleCloseEditQuantityPopup = () => {
         setEditQuantityPopup(null);

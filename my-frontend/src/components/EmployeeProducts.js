@@ -1,4 +1,3 @@
-// EmployeeProducts.js
 import React, { useState, useEffect } from 'react';
 import ProductPopup from './ProductPopup';
 
@@ -8,10 +7,11 @@ function EmployeeProducts() {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/products', {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         headers: { 'Accept': 'application/json' }
       });
       const data = await response.json();

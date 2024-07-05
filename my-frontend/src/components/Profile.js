@@ -12,10 +12,12 @@ const Profile = ({ username }) => {
   });
   const [error, setError] = useState('');
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/user/${username}`);
+        const response = await fetch(`${API_BASE_URL}/user/${username}`);
         if (!response.ok) {
           throw new Error('Failed to fetch user details');
         }
@@ -36,7 +38,7 @@ const Profile = ({ username }) => {
     };
 
     fetchUserDetails();
-  }, [username]);
+  }, [username, API_BASE_URL]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,7 +52,7 @@ const Profile = ({ username }) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch(`http://localhost:3000/user/${username}`, {
+      const response = await fetch(`${API_BASE_URL}/user/${username}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

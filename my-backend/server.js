@@ -28,8 +28,8 @@ const config = {
   options: {
     encrypt: true, // Necessary for Azure SQL
     enableArithAbort: true,
-    connectionTimeout: 300000,  // Increase the connection timeout
-    requestTimeout: 300000,
+    connectionTimeout: 30000000,  // Increase the connection timeout
+    requestTimeout: 30000000,
     trustServerCertificate: true 
   }
 };

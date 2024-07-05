@@ -16,6 +16,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../my-frontend/build')));
 //app.use(express.static(path.join(__dirname, 'client/build')));
 
@@ -49,6 +50,11 @@ sql.connect(config).then(pool => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+app.use((req, res, next) => {
+  console.log(`Received request: ${req.method} ${req.url}`);
+  next();
+});
+
 
 // Global error handler
 app.use((error, req, res, next) => {
@@ -58,9 +64,9 @@ app.use((error, req, res, next) => {
 //app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Catch-all route to serve the React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
-});
+//app.get('*', (req, res) => {
+  //res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
+//});
 app.post('/signup', async (req, res) => {
   console.log('Received signup data:', req.body);
   const { clientName, email, phone, password, address, city, country, zip } = req.body;
@@ -119,6 +125,7 @@ app.post('/signin', async (req, res) => {
 
 // server.js (or equivalent server setup file)
 app.get('/products', async (req, res) => {
+  console.log('Received request for products');
   try {
     const pool = await sql.connect(config);
     const result = await pool.request().query('SELECT * FROM Products');

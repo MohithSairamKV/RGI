@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.8338351e.css",
-    "main.js": "/static/js/main.71662a8c.js",
+    "main.js": "/static/js/main.2aa25d6e.js",
     "static/media/Brands.png": "/static/media/Brands.6f1d3cb8772351a8d516.png",
     "static/media/ethnic food distributor.png": "/static/media/ethnic food distributor.47c0fb4c21f6af81ac55.png",
     "index.html": "/index.html",
     "main.8338351e.css.map": "/static/css/main.8338351e.css.map",
-    "main.71662a8c.js.map": "/static/js/main.71662a8c.js.map"
+    "main.2aa25d6e.js.map": "/static/js/main.2aa25d6e.js.map"
   },
   "entrypoints": [
     "static/css/main.8338351e.css",
-    "static/js/main.71662a8c.js"
+    "static/js/main.2aa25d6e.js"
   ]
 }

@@ -26,6 +26,8 @@ const HomeContent = ({ onLogin }) => {
   const [showSignUpSuccess, setShowSignUpSuccess] = useState(false);
   const navigate = useNavigate();
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setErrEmail("");
@@ -61,7 +63,7 @@ const HomeContent = ({ onLogin }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/signin', requestOptions);
+      const response = await fetch(`${API_BASE_URL}/signin`, requestOptions);
       const data = await response.json();
 
       if (response.ok) {
@@ -87,7 +89,7 @@ const HomeContent = ({ onLogin }) => {
     e.preventDefault();
     let newErrors = {};
     let isValid = true;
-  
+
     // Validate fields
     Object.entries(signUpFormData).forEach(([key, value]) => {
       if (!value) {
@@ -95,42 +97,42 @@ const HomeContent = ({ onLogin }) => {
         isValid = false;
       }
     });
-  
+
     // Validate email format
     const emailRegex = /\S+@\S+\.\S+/;
     if (signUpFormData.email && !emailRegex.test(signUpFormData.email)) {
       newErrors.email = "Enter a valid email";
       isValid = false;
     }
-  
+
     // Password length check
     if (signUpFormData.password && signUpFormData.password.length < 6) {
       newErrors.password = "Passwords must be at least 6 characters";
       isValid = false;
     }
-  
+
     if (!checked) {
       alert('Please agree to the terms and conditions.');
       isValid = false;
     }
-  
+
     if (!isValid) {
       setSignUpErrors(newErrors);
       return;
     }
-  
+
     // API call to register the user
     try {
-      const response = await fetch('http://localhost:3000/signup', {
+      const response = await fetch(`${API_BASE_URL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(signUpFormData)
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setSuccessMsg(`Welcome ${signUpFormData.clientName}! Please check your email at ${signUpFormData.email} to continue.`);
         setSignUpFormData({
@@ -154,7 +156,6 @@ const HomeContent = ({ onLogin }) => {
       console.error('Network error:', error);
     }
   };
-  
 
   return (
     <main style={{ flex: 1, display: 'flex', padding: '40px 20px', background: '#f8f9fa', justifyContent: 'center', alignItems: 'center' }}>
@@ -165,8 +166,8 @@ const HomeContent = ({ onLogin }) => {
             As one of the largest ethnic food manufacturers & distributors, we stock and distribute everything you need to fill your kitchen or store shelves with authentic Indian and Pakistani food.
           </p>
           <p style={{ fontSize: '16px', lineHeight: '1.5' }}>
-            <strong> Our Partner Brands</strong> 
-            </p>
+            <strong> Our Partner Brands</strong>
+          </p>
           <img src={brandsImage} alt="Brands" style={{ width: '100%', marginTop: '20px' }} />
           <p style={{ fontSize: '16px', lineHeight: '1.5', marginTop: '20px' }}>
             Hurry up and create your account, over 2000 items are waiting for you!

@@ -564,22 +564,22 @@ const writeProducts = (newProduct, callback) => {
 
 
 
-router.post('/api/products', (req, res) => {
-  try {
-      const newProduct = req.body;
-      writeProducts(newProduct, (err) => {
-          if (err) {
-              console.error('Error writing to products in the database:', err);
-              res.status(500).json({ message: 'Error writing to products in the database' });
-          } else {
-              res.status(201).json({ message: 'Product added successfully.' });
-          }
-      });
-  } catch (error) {
-      console.error('Error processing product request:', error);
-      res.status(500).json({ message: 'Error processing product request' });
-  }
-});
+// router.post('/api/products', (req, res) => {
+//   try {
+//       const newProduct = req.body;
+//       writeProducts(newProduct, (err) => {
+//           if (err) {
+//               console.error('Error writing to products in the database:', err);
+//               res.status(500).json({ message: 'Error writing to products in the database' });
+//           } else {
+//               res.status(201).json({ message: 'Product added successfully.' });
+//           }
+//       });
+//   } catch (error) {
+//       console.error('Error processing product request:', error);
+//       res.status(500).json({ message: 'Error processing product request' });
+//   }
+// });
 
 const readOrders = (username, callback) => {
   try {
@@ -1030,41 +1030,55 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
+function checkFileType(file, cb) {
+  const filetypes = /jpeg|jpg|png|gif/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
 
-app.put('/edit/:productId', upload.single('img'), async (req, res) => {
-  const { productId } = req.params;
-  const { Product_Name, sku, Brand } = req.body;
-  const imageUrl = req.file ? req.file.path : null;
-
-  try {
-    const pool = await sql.connect(config);
-    const qry = `UPDATE Products 
-                 SET Product_Name = @Product_Name, 
-                     sku = @sku, 
-                     Brand = @Brand,
-                     img = @Img
-                 WHERE product_id = @ProductId`;
-
-    const request = pool.request();
-    request.input('Product_Name', sql.NVarChar, Product_Name);
-    request.input('sku', sql.NVarChar, sku);
-    request.input('Brand', sql.NVarChar, Brand);
-    request.input('Img', sql.NVarChar, imageUrl);
-    request.input('ProductId', sql.Int, productId);
-
-    const result = await request.query(qry);
-
-    if (result.rowsAffected[0] > 0) {
-      res.json({ message: 'Product updated successfully.', imageUrl: imageUrl });
-    } else {
-      res.status(404).json({ message: 'Product not found.' });
-    }
-  } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ message: 'Error updating product details' });
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb('Error: Images Only!');
   }
-});
+}
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 }, // Limit file size to 1MB
+  fileFilter: (req, file, cb) => {
+    checkFileType(file, cb);
+  }
+}).single('img');
+
+// Image upload and update endpoint
+app.put('/edit/:productId', (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      res.status(400).json({ message: err });
+    } else {
+      if (req.file == undefined) {
+        res.status(400).json({ message: 'No file selected' });
+      } else {
+        const productId = req.params.productId;
+        const { Product_Name, sku, Brand } = req.body;
+        const imgPath = `uploads/${req.file.filename}`;
+
+        try {
+          // Connect to the database
+          await sql.connect(config);
+
+          // Update the product details
+          const result = await sql.query`UPDATE Products SET Product_Name = ${Product_Name}, sku = ${sku}, Brand = ${Brand}, img = ${imgPath} WHERE product_id = ${productId}`;
+
+          res.status(200).json({ message: 'Product details updated successfully', imgPath });
+        } catch (error) {
+          console.error('Error updating product details:', error);
+          res.status(500).json({ message: 'Error updating product details' });
+        }
+      }
+    }
+  });
+})
 
 app.get('/new-arrivals', async (req, res) => {
   try {

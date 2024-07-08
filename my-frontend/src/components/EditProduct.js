@@ -4,12 +4,11 @@ import { useParams } from 'react-router-dom';
 const EditProduct = () => {
   const [product, setProduct] = useState(null);
   const { productId } = useParams();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/edit/${productId}`, {
+        const response = await fetch(`http://localhost:3000/edit/${productId}`, {
           headers: { 'Accept': 'application/json' }
         });
         if (!response.ok) {
@@ -23,7 +22,7 @@ const EditProduct = () => {
     };
 
     fetchProductDetails();
-  }, [productId, API_BASE_URL]);
+  }, [productId]);
 
   const handleInputChange = (e) => {
     setProduct({
@@ -51,7 +50,7 @@ const EditProduct = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/edit/${productId}`, {
+      const response = await fetch(`http://localhost:3000/edit/${productId}`, {
         method: 'PUT',
         body: formData,
       });

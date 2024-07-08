@@ -1,4 +1,3 @@
-// ForgotPassword.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,13 +7,14 @@ const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: Enter email, 2: Enter OTP
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch('http://localhost:3000/send-otp', {
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
     setError("");
 
     try {
-      const response = await fetch('http://localhost:3000/verify-otp', {
+      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp })

@@ -5,11 +5,12 @@ const PreviousOrderDetails = () => {
     const { orderId } = useParams();
     const [orderDetails, setOrderDetails] = useState([]);
     const navigate = useNavigate();
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const fetchOrderDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/user/main/order-details/${orderId}`);
+                const response = await fetch(`${API_BASE_URL}/user/main/order-details/${orderId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -21,11 +22,11 @@ const PreviousOrderDetails = () => {
         };
 
         fetchOrderDetails();
-    }, [orderId]);
+    }, [orderId, API_BASE_URL]);
 
     const repeatOrder = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/user/main/repeat-order/${orderId}`, { method: 'POST' });
+            const response = await fetch(`${API_BASE_URL}/user/main/repeat-order/${orderId}`, { method: 'POST' });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

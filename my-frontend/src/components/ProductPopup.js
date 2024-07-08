@@ -6,6 +6,7 @@ function ProductPopup({ product, username, onClose }) {
     const [UOM, setUOM] = useState('Each');  // State for UOM
     const [error, setError] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);  // State to control success popup
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const handleSave = async () => {
         setError('');  // Clear previous errors
@@ -18,7 +19,7 @@ function ProductPopup({ product, username, onClose }) {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/user/main/orders', {
+            const response = await fetch(`${API_BASE_URL}/user/main/orders`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(order)

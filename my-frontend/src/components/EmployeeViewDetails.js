@@ -5,18 +5,19 @@ function EmployeeViewDetails() {
   const { orderId } = useParams();
   const [orderDetails, setOrderDetails] = useState([]);
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const fetchOrderDetails = useCallback(async () => {
     console.log('Fetching order details for orderId:', orderId); // Debug log
     try {
-      const response = await fetch(`http://localhost:3000/employee/orders/${orderId}/details`);
+      const response = await fetch(`${API_BASE_URL}/employee/orders/${orderId}/details`);
       const data = await response.json();
       console.log('Fetched order details:', data); // Debugging log
       setOrderDetails(data);
     } catch (error) {
       console.error('Error fetching order details:', error);
     }
-  }, [orderId]);
+  }, [orderId, API_BASE_URL]);
 
   useEffect(() => {
     fetchOrderDetails();

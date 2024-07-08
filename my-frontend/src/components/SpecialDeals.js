@@ -8,11 +8,12 @@ function SpecialDeals({ username }) {
     const [selectedBrand, setSelectedBrand] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     // Fetch special deals data from the database on component mount
     const fetchSpecialDeals = async () => {
         try {
-            const response = await fetch('http://localhost:3000/special-deals', {
+            const response = await fetch(`${API_BASE_URL}/special-deals`, {
                 headers: { 'Accept': 'application/json' }
             });
 
@@ -66,7 +67,7 @@ function SpecialDeals({ username }) {
                         .map((product, index) => (
                             <div key={index} className="product-card special-deal-card">
                                 <div className="discount-badge">{product.discount}% OFF</div>
-                                <img src={`http://localhost:3000/${product.img}`} alt={product.Product_Name} />
+                                <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
                                 <h3>{product.Product_Name}</h3>
                                 <p>SKU: {product.sku}</p>
                                 <p>Brand: {product.Brand}</p>

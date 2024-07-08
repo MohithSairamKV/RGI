@@ -1,11 +1,9 @@
-// MainContent.js
-
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import ProductPopup from './ProductPopup.js';
 import { Link } from 'react-router-dom';
 
-function MainContent({username}) {
+function MainContent({ username }) {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -13,38 +11,29 @@ function MainContent({username}) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [excelData, setExcelData] = useState(null);
     const [viewMode, setViewMode] = useState('table');
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const toggleViewMode = () => {
         setViewMode((prevMode) => (prevMode === 'table' ? 'cards' : 'table'));
     };
+
     // Fetch products data from the database on component mount
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:3000/products', {
-    headers: { 'Accept': 'application/json' }
-});
+            const response = await fetch(`${API_BASE_URL}/products`, {
+                headers: { 'Accept': 'application/json' }
+            });
 
-    
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-    
+
             const responseBody = await response.json();
-    
-            try {
-                // Attempt to parse the response body as JSON
-               // const data = JSON.parse(responseBody);
-                setProducts(responseBody);
-            } catch (jsonError) {
-                console.error('Error parsing JSON response:', jsonError);
-                // Handle the error or set an appropriate default value for products
-                setProducts([]);
-            }
+            setProducts(responseBody);
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
         }
     };
-    
 
     useEffect(() => {
         fetchProducts();
@@ -53,7 +42,7 @@ function MainContent({username}) {
     // Function to save Excel data to the database
     const saveExcelDataToDatabase = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/save-excel', {
+            const response = await fetch(`${API_BASE_URL}/api/save-excel`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,7 +77,7 @@ function MainContent({username}) {
     const deleteExcelDataFromDatabase = async () => {
         if (window.confirm('Are you sure you want to delete the Excel data?')) {
             try {
-                const response = await fetch('http://localhost:3001/api/delete-excel', {
+                const response = await fetch(`${API_BASE_URL}/api/delete-excel`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) throw new Error('Error deleting Excel data');
@@ -106,28 +95,27 @@ function MainContent({username}) {
         setSelectedProduct(product);
         setPopupVisible(true);
     };
+
     const handleEditItemClick = (product) => {
         // Implement your logic for handling the edit item functionality
         console.log('Edit Item Clicked:', product);
     };
 
     const handleDeleteItemClick = async (product_id) => {
-        
-            if (window.confirm(`Are you sure you want to delete ?`)) {
-                try {
-                    const response = await fetch(`http://localhost:3001/api/delete-product/${product_id}`, {
-                        method: 'DELETE',
-                    });
-                    if (!response.ok) throw new Error('Error deleting product');
-                    // Refresh the products or update the state as needed
-                    alert('Product deleted successfully.');
-                    //window.location.reload()
-                } catch (error) {
-                    console.error('Error:', error);
-                }
+        if (window.confirm(`Are you sure you want to delete ?`)) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/delete-product/${product_id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) throw new Error('Error deleting product');
+                // Refresh the products or update the state as needed
+                alert('Product deleted successfully.');
+                fetchProducts();
+            } catch (error) {
+                console.error('Error:', error);
             }
-        };
-    
+        }
+    };
 
     return (
         <div>
@@ -155,47 +143,48 @@ function MainContent({username}) {
                 />
                 <button onClick={() => saveExcelDataToDatabase(excelData)}>Save Excel Data</button>
                 <button onClick={toggleViewMode}>Customer View</button>
-            </div> {viewMode === 'table' ? (
+            </div> 
+            {viewMode === 'table' ? (
                 <table className="products-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>SKU</th>
-                        <th>Brand</th>
-                        <th>Action</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-            {products &&
-              products
-                .filter(
-                  (product) =>
-                    product.Product_Name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                    (selectedBrand ? product.Brand === selectedBrand : true)
-                )
-                .map((product, index) => (
-                  <tr key={index}>
-                    <td>{product.Product_Name}</td>
-                    <td>{product.sku}</td>
-                    <td>{product.Brand}</td>
-                    <td>
-                      <button onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
-                    </td>
-                    <td>
-                      {/* Use Link to navigate to the edit item page */}
-                      <Link to={`/edit/${product.product_id}`}>
-                        <button>Edit Item</button>
-                      </Link>
-                    </td>
-                    <td>
-                      <button onClick={() => handleDeleteItemClick(product.product_id)}>Delete Item</button>
-                    </td>
-                  </tr>
-                ))}
-          </tbody>
-            </table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>SKU</th>
+                            <th>Brand</th>
+                            <th>Action</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products &&
+                            products
+                                .filter(
+                                    (product) =>
+                                        product.Product_Name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                                        (selectedBrand ? product.Brand === selectedBrand : true)
+                                )
+                                .map((product, index) => (
+                                    <tr key={index}>
+                                        <td>{product.Product_Name}</td>
+                                        <td>{product.sku}</td>
+                                        <td>{product.Brand}</td>
+                                        <td>
+                                            <button onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
+                                        </td>
+                                        <td>
+                                            {/* Use Link to navigate to the edit item page */}
+                                            <Link to={`/edit/${product.product_id}`}>
+                                                <button>Edit Item</button>
+                                            </Link>
+                                        </td>
+                                        <td>
+                                            <button onClick={() => handleDeleteItemClick(product.product_id)}>Delete Item</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                    </tbody>
+                </table>
             ) : (
                 <div className="products-container">
                     {products &&
@@ -207,8 +196,7 @@ function MainContent({username}) {
                             )
                             .map((product, index) => (
                                 <div key={index} className="product-card">
-                                    <img src={`http://localhost:3000/${product.img}`} alt={product.Product_Name} />
-
+                                    <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
                                     <h3>{product.Product_Name}</h3>
                                     <p>SKU: {product.sku}</p>
                                     <p>Brand: {product.Brand}</p>
@@ -221,4 +209,5 @@ function MainContent({username}) {
         </div>
     );
 }
+
 export default MainContent;

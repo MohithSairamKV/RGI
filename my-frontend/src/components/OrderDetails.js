@@ -94,6 +94,7 @@ function OrderDetails() {
   const { orderAddedBy } = location.state || {};
   const [orderDetails, setOrderDetails] = useState([]);
   const [status, setStatus] = useState('');
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     fetchOrderDetails();
@@ -101,7 +102,7 @@ function OrderDetails() {
 
   const fetchOrderDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/employee/orders/${orderId}`);
+      const response = await fetch(`${API_BASE_URL}/employee/orders/${orderId}`);
       const data = await response.json();
       setOrderDetails(data);
     } catch (error) {
@@ -113,7 +114,7 @@ function OrderDetails() {
     try {
       const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
       const username = loggedInUser ? loggedInUser.username : '';
-      const response = await fetch(`http://localhost:3000/employee/orders/${orderId}`, {
+      const response = await fetch(`${API_BASE_URL}/employee/orders/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -9,10 +9,11 @@ function QFCContent({ username }) {
     const [popupVisible, setPopupVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [excelData, setExcelData] = useState(null);
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:3000/qfctable', {
+            const response = await fetch(`${API_BASE_URL}/qfctable`, {
                 headers: { 'Accept': 'application/json' }
             });
 
@@ -33,7 +34,7 @@ function QFCContent({ username }) {
 
     const saveExcelDataToDatabase = async (data) => {
         try {
-            const response = await fetch('http://localhost:3001/api/save-qfc-excel', {
+            const response = await fetch(`${API_BASE_URL}/api/save-qfc-excel`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ function QFCContent({ username }) {
     const deleteExcelDataFromDatabase = async () => {
         if (window.confirm('Are you sure you want to delete the Excel data?')) {
             try {
-                const response = await fetch('http://localhost:3001/api/delete-qfc-excel', {
+                const response = await fetch(`${API_BASE_URL}/api/delete-qfc-excel`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) throw new Error('Error deleting Excel data');
@@ -111,7 +112,7 @@ function QFCContent({ username }) {
                     )
                     .map((product, index) => (
                         <div key={index} className="product-card">
-                            <img src={`http://localhost:3000/${product.img}`} alt={product.Product_Name} />
+                            <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
                             <h3>{product.Product_Name}</h3>
                             <p>Brand: {product.Brand}</p>
                             <p>Quantity Present : {product.quantity_on_hand}</p>

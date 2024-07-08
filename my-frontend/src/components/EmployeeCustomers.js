@@ -5,6 +5,7 @@ import './EmployeeCustomers.css';
 function EmployeeCustomers() {
     const [customers, setCustomers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         fetchCustomers();
@@ -12,7 +13,7 @@ function EmployeeCustomers() {
 
     const fetchCustomers = async () => {
         try {
-            const response = await fetch('http://localhost:3000/employee/customers');
+            const response = await fetch(`${API_BASE_URL}/employee/customers`);
             const data = await response.json();
             setCustomers(data);
         } catch (error) {

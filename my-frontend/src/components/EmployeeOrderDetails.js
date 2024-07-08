@@ -5,6 +5,7 @@ function EmployeeOrderDetails() {
   const { clientName, orderType } = useParams();
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     fetchOrders();
@@ -12,7 +13,7 @@ function EmployeeOrderDetails() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/employee/orders/${clientName}/${orderType}`);
+      const response = await fetch(`${API_BASE_URL}/employee/orders/${clientName}/${orderType}`);
       const data = await response.json();
       setOrders(data);
     } catch (error) {

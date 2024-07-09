@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const styles = {
   container: {
@@ -31,25 +31,19 @@ const styles = {
     padding: '10px',
     color: '#555',
   },
-  list: {
-    listStyle: 'none',
-    padding: '0',
-  },
-  listItem: {
+  commentsSection: {
+    marginTop: '20px',
     backgroundColor: '#fff',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
     padding: '15px',
-    marginBottom: '10px',
+    borderRadius: '8px',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.2s, boxShadow 0.2s',
   },
-  listItemHover: {
-    transform: 'translateY(-3px)',
-    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.15)',
+  commentsLabel: {
+    fontWeight: 'bold',
+    marginBottom: '5px',
+    color: '#333',
   },
-  listItemText: {
-    margin: '5px 0',
+  commentsText: {
     color: '#555',
   },
   updateStatusContainer: {
@@ -82,16 +76,63 @@ const styles = {
   printHeader: {
     textAlign: 'center',
     marginBottom: '20px',
+    fontSize: '16px',
+    fontWeight: 'bold',
   },
-  printSection: {
-    display: 'none',
+  printFooter: {
+    textAlign: 'center',
+    marginTop: '20px',
+    fontSize: '12px',
+    borderTop: '1px solid #e0e0e0',
+    paddingTop: '10px',
+  },
+  '@media print': {
+    container: {
+      marginTop: '0',
+      boxShadow: 'none',
+    },
+    header: {
+      display: 'block',
+      textAlign: 'center',
+      marginBottom: '20px',
+      fontSize: '16px',
+      fontWeight: 'bold',
+    },
+    footer: {
+      display: 'block',
+      textAlign: 'center',
+      marginTop: '20px',
+      fontSize: '12px',
+      borderTop: '1px solid #e0e0e0',
+      paddingTop: '10px',
+    },
+    body: {
+      margin: '0',
+      padding: '0',
+    },
+    'table, th, td': {
+      border: '1px solid #000',
+      borderCollapse: 'collapse',
+    },
+    th: {
+      padding: '10px',
+      textAlign: 'left',
+    },
+    td: {
+      padding: '10px',
+      textAlign: 'left',
+    },
+    'textarea, button, input, select, a': {
+      display: 'none',
+    },
+    '.header, .footer': {
+      display: 'block',
+    },
   },
 };
 
 function OrderDetails() {
   const { orderId } = useParams();
-  const location = useLocation();
-  const { orderAddedBy } = location.state || {};
   const [orderDetails, setOrderDetails] = useState([]);
   const [status, setStatus] = useState('');
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -132,32 +173,48 @@ function OrderDetails() {
     window.print();
   };
 
+  const orderedBy = orderDetails.length > 0 ? orderDetails[0].Added_by : '';
+  const comments = orderDetails.length > 0 ? orderDetails[0].Comments : '';
+
   return (
     <div style={styles.container}>
       <div id="printable-content">
-        <h2 style={styles.heading}>Reshmisgroup</h2>
+        <div className="header" style={styles.printHeader}>
+          Reshmi's Group Inc
+        </div>
+        {/* <h2 style={styles.heading}>Reshmisgroup</h2> */}
         <h3 style={styles.printHeader}>Order ID: {orderId}</h3>
-        <h4 style={styles.printHeader}>Ordered by: {orderAddedBy}</h4>
+        <h4 style={styles.printHeader}>Ordered by: {orderedBy}</h4>
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={styles.th}>Product</th>
-              <th style={styles.th}>Quantity</th>
-              <th style={styles.th}>SKU</th>
+            <th style={styles.th}>Quantity</th>
+            <th style={styles.th}>SKU</th>
+              <th style={styles.th}>Product Name</th>
+              
+              
               <th style={styles.th}>UOM</th>
             </tr>
           </thead>
           <tbody>
             {orderDetails.map(detail => (
               <tr key={detail.OrderItemID}>
-                <td style={styles.td}>{detail.Product_Name}</td>
+               
                 <td style={styles.td}>{detail.Quantity}</td>
                 <td style={styles.td}>{detail.Sku}</td>
+                <td style={styles.td}>{detail.Product_Name}</td>
                 <td style={styles.td}>{detail.UOM}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div style={styles.commentsSection}>
+          <label style={styles.commentsLabel}>Comments:</label>
+          <p style={styles.commentsText}>{comments}</p>
+        </div>
+        {/* <div className="footer" style={styles.printFooter}>
+          &copy; 2023 Reshmi's Group Inc
+        </div> */}
       </div>
       <div style={styles.updateStatusContainer}>
         <label htmlFor="status" style={styles.label}>Update Status:</label>

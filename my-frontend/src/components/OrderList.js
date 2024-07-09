@@ -4,6 +4,7 @@ import EditQuantityPopup from './EditQuantityPopup.js';
 
 const OrderList = ({ username }) => {
     const [orders, setOrders] = useState([]);
+    const [comments, setComments] = useState("");
     const [editQuantityPopup, setEditQuantityPopup] = useState(null);
     const navigate = useNavigate();
 
@@ -70,11 +71,15 @@ const OrderList = ({ username }) => {
         try {
             const response = await fetch(`${API_BASE_URL}/user/main/orders/send/${orders[0].OrderID}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ comments })
             });
             if (response.ok) {
                 alert('Order placed successfully. Thanks!');
                 setOrders([]);
+                setComments(""); // Clear the comments field after successful order submission
             } else {
                 const errMsg = await response.text();
                 console.error('Failed to send order:', errMsg);
@@ -127,6 +132,7 @@ const OrderList = ({ username }) => {
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>UOM</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,8 +146,6 @@ const OrderList = ({ username }) => {
                                 <button onClick={() => handleEditQuantityClick(order.Sku, order.Quantity)}>
                                     Edit Quantity
                                 </button>
-                            </td>
-                            <td>
                                 <button onClick={() => DeleteProduct(order.Sku)}>Delete</button>
                             </td>
                         </tr>
@@ -149,6 +153,16 @@ const OrderList = ({ username }) => {
                 </tbody>
             </table>
             {orders.length === 0 && <p>No orders yet.</p>}
+            <div>
+                <label htmlFor="comments">Comments:</label>
+                <textarea
+                    id="comments"
+                    value={comments}
+                    onChange={(e) => setComments(e.target.value)}
+                    rows="2"
+                    cols="25"
+                />
+            </div>
             <button onClick={handleBack}>Back to Home</button>
             <button onClick={handleSendOrder}>Send Order</button>
 

@@ -625,8 +625,61 @@ footer a:hover {
 }
 
 
-
 @media print {
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-content, #printable-content * {
+    visibility: visible;
+  }
+
+  #printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .header, .footer {
+    display: block;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  table, th, td {
+    border: 1px solid #000;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  textarea, button, input, select, a {
+    display: none;
+  }
+
+  .comments-section {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+}
+
+
+
+
+/* @media print {
   body * {
     visibility: hidden;
   }
@@ -645,5 +698,5 @@ footer a:hover {
   .updateStatusContainer, #footer {
     display: none;
   }
-}
+} */
 

@@ -829,18 +829,50 @@ app.post('/user/main/orders', async (req, res) => {
 
 
 
+// app.put('/user/main/orders/send/:orderId', async (req, res) => {
+//   try {
+//     const { orderId } = req.params;
+//     const pool = await sql.connect(config);
+    
+//     const qry = `UPDATE Orders 
+//                  SET OrderSentStatus = @OrderSentStatus, OrderSentDate = GETDATE() 
+//                  WHERE OrderID = @OrderId AND OrderSentStatus = 0`;
+    
+//     const request = pool.request();
+//     request.input('OrderSentStatus', sql.Bit, true);
+//     request.input('OrderId', sql.Int, orderId);
+    
+//     const result = await request.query(qry);
+
+//     if (result.rowsAffected[0] > 0) {
+//       console.log(`Order ${orderId} marked as sent.`);
+//       res.status(200).json({ message: `Order ${orderId} marked as sent.` });
+//     } else {
+//       console.log(`Order ${orderId} not found or already sent.`);
+//       res.status(404).json({ message: `Order ${orderId} not found or already sent.` });
+//     }
+//   } catch (err) {
+//     console.error('SQL error while updating order:', err);
+//     res.status(500).json({ message: 'Error updating order status' });
+//   }
+// });
+
 app.put('/user/main/orders/send/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
+    const { comments } = req.body; // Extract comments from the request body
     const pool = await sql.connect(config);
-    
+
     const qry = `UPDATE Orders 
-                 SET OrderSentStatus = @OrderSentStatus, OrderSentDate = GETDATE() 
+                 SET OrderSentStatus = @OrderSentStatus, 
+                     OrderSentDate = GETDATE(), 
+                     Comments = @Comments 
                  WHERE OrderID = @OrderId AND OrderSentStatus = 0`;
     
     const request = pool.request();
     request.input('OrderSentStatus', sql.Bit, true);
     request.input('OrderId', sql.Int, orderId);
+    request.input('Comments', sql.NVarChar, comments || ''); // Add the comments to the request inputs
     
     const result = await request.query(qry);
 
@@ -856,7 +888,6 @@ app.put('/user/main/orders/send/:orderId', async (req, res) => {
     res.status(500).json({ message: 'Error updating order status' });
   }
 });
-
 
 
 

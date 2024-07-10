@@ -1182,13 +1182,7 @@ app.get('/employee/orders', async (req, res) => {
     console.error('SQL error while fetching orders:', err);
     res.status(500).json({ message: 'Error fetching orders' });
   }
-});
-
-
-
-
-
-// Fetch order details by order ID
+});// Fetch order details by order ID
   app.get('/employee/orders/:orderId', async (req, res) => {
     try {
       const { orderId } = req.params;

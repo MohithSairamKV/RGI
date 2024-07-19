@@ -10,10 +10,22 @@ const CustomerHeader = ({ onLogout, username }) => {
       </Link>
       <div className="header-nav">
         <span className="header-greeting">Welcome, {username || 'Guest'}!</span>
-        <Link to="/profile" className="header-icon">👤</Link>
-        <Link to="/cart" className="header-icon">🛒</Link>
-        <Link to="/previous-orders" className="header-icon">📦</Link>
-        <button className="header-icon" onClick={onLogout}>↩</button>
+        <div className="header-item">
+          <Link to="/profile" className="header-icon">👤</Link>
+          <span className="header-text">Profile</span>
+        </div>
+        <div className="header-item">
+          <Link to="/cart" className="header-icon">🛒</Link>
+          <span className="header-text">Cart</span>
+        </div>
+        <div className="header-item">
+          <Link to="/previous-orders" className="header-icon">📦</Link>
+          <span className="header-text">Orders</span>
+        </div>
+        <div className="header-item">
+          <button className="header-icon" onClick={onLogout}>↩</button>
+          <span className="header-text">Logout</span>
+        </div>
       </div>
     </header>
   );

@@ -21,12 +21,16 @@ function ProductPopup({ product, username, onClose }) {
         try {
             const response = await fetch(`${API_BASE_URL}/user/main/orders`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(order)
             });
 
             if (response.ok) {
                 setShowSuccess(true);  // Show success popup
+                setTimeout(() => {
+                    setShowSuccess(false);
+                    onClose();  // Close the product popup after 3 seconds
+                }, 3000);
             } else {
                 const errMsg = await response.text();
                 console.log('Failed to save order', errMsg);

@@ -116,7 +116,7 @@ function CustomerContent({ username }) {
                             <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
                             <h3>{product.Product_Name}</h3>
                             <p>Brand: {product.Brand}</p>
-                            <p>Quantity Present : {product.quantity_on_hand}</p>
+                            
                             <button onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
                         </div>
                     ))}

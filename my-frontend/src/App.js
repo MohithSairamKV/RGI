@@ -27,6 +27,7 @@ import EmployeeOrderDetails from './components/EmployeeOrderDetails';
 import EmployeeViewDetails from './components/EmployeeViewDetails';
 import './App.css';
 import HomeFooter from './components/HomeFooter';
+import OrderInstantly from './components/OrderInstantly';
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -96,6 +97,7 @@ function App() {
               }
             />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/orderinstantly" element={<OrderInstantly />} />
             <Route
               path="/admin/main"
               element={userRole === 'admin' ? <MainContent username={username} /> : <Navigate replace to="/" />}

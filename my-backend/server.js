@@ -1243,3 +1243,16 @@ app.get('/qfctable', async (req, res) => {
     res.status(500).json({ message: 'Error fetching QFC products' });
   }
 });
+
+app.get('/orderinstantly/products', async (req, res) => {
+  try {
+    const pool = await sql.connect(config);
+    const result = await pool.request()
+      .query('SELECT * FROM QFCProducts');
+   
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('SQL error while fetching QFC products:', err);
+    res.status(500).json({ message: 'Error fetching QFC products' });
+  }
+});

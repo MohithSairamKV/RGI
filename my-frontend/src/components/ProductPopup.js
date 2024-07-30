@@ -1,3 +1,77 @@
+// import React, { useState } from 'react';
+// import SuccessPopup from './SuccessPopup';  // Correctly import the component
+
+// function ProductPopup({ product, username, onClose }) {
+//     const [Quantity, setQuantity] = useState(1);
+//     const [UOM, setUOM] = useState('Each');  // State for UOM
+//     const [error, setError] = useState('');
+//     const [showSuccess, setShowSuccess] = useState(false);  // State to control success popup
+//     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+//     const handleSave = async () => {
+//         setError('');  // Clear previous errors
+//         const order = {
+//             Product_Name: product.Product_Name,
+//             Sku: product.sku,
+//             Quantity: parseInt(Quantity, 10),
+//             UOM: UOM,  // Include UOM in the order object
+//             added_by: username
+//         };
+
+//         try {
+//             const response = await fetch(`${API_BASE_URL}/user/main/orders`, {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify(order)
+//             });
+
+//             if (response.ok) {
+//                 setShowSuccess(true);  // Show success popup
+//                 setTimeout(() => {
+//                     setShowSuccess(false);
+//                     onClose();  // Close the product popup after 3 seconds
+//                 }, 3000);
+//             } else {
+//                 const errMsg = await response.text();
+//                 console.log('Failed to save order', errMsg);
+//                 setError(errMsg || 'Failed to save order');
+//             }
+//         } catch (error) {
+//             console.error('Error saving order:', error);
+//             setError('Network error: ' + error.message);
+//         }
+//     };
+
+//     const handleCloseSuccess = () => {
+//         setShowSuccess(false);
+//         onClose();  // Close the product popup as well
+//     };
+
+//     return (
+//         <div>
+//             {showSuccess ? (
+//                 <SuccessPopup onClose={handleCloseSuccess} />
+//             ) : (
+//                 <div className="popup">
+//                     <div className="popup-inner">
+//                         <h3>{product.Product_Name}</h3>
+//                         <p>SKU: {product.sku}</p>
+//                         <input type="number" value={Quantity} onChange={(e) => setQuantity(e.target.value)} min="1"/>
+//                         <select value={UOM} onChange={(e) => setUOM(e.target.value)}>
+//                             <option value="Each">Each</option>
+//                             <option value="Case">Case</option>
+//                         </select>
+//                         {error && <p className="error">{error}</p>}
+//                         <button onClick={handleSave}>Save</button>
+//                         <button onClick={onClose}>Close</button>
+//                     </div>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// }
+
+// export default ProductPopup;
 import React, { useState } from 'react';
 import SuccessPopup from './SuccessPopup';  // Correctly import the component
 
@@ -15,11 +89,13 @@ function ProductPopup({ product, username, onClose }) {
             Sku: product.sku,
             Quantity: parseInt(Quantity, 10),
             UOM: UOM,  // Include UOM in the order object
-            added_by: username
+            added_by: username || 'GuestUser'
         };
 
+        const endpoint = username ? `${API_BASE_URL}/user/main/orders` : `${API_BASE_URL}/generaluser/orders`;
+
         try {
-            const response = await fetch(`${API_BASE_URL}/user/main/orders`, {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(order)

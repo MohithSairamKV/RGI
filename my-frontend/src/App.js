@@ -131,9 +131,10 @@ function App() {
               element={userRole === 'employee' ? <EmployeeCustomers /> : <Navigate replace to="/" />}
             />
             <Route
-              path="/cart"
-              element={userRole === 'admin' || userRole === 'user' || userRole === 'qfc' ? <OrderList username={username} /> : <Navigate replace to="/" />}
-            />
+  path="/cart"
+  element={(userRole === 'admin' || userRole === 'user' || userRole === 'qfc' || !userRole) ? <OrderList username={username} /> : <Navigate replace to="/" />}
+/>
+
             <Route
               path="/edit/:productId"
               element={userRole === 'admin' ? <EditProduct /> : <Navigate replace to="/" />}

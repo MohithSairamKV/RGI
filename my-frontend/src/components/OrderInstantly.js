@@ -9,11 +9,13 @@ const OrderInstantly = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
+  const [storeName, setStoreName] = useState('');
+  const [imageFiles, setImageFiles] = useState([]);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/qfctable`, {
+      const response = await fetch(`${API_BASE_URL}/products711`, {
         headers: { 'Accept': 'application/json' }
       });
 
@@ -39,20 +41,31 @@ const OrderInstantly = () => {
   };
 
   const handlePlaceOrder = async () => {
+    const formData = new FormData();
+    imageFiles.forEach((file) => {
+      formData.append('images', file);
+    });
+    formData.append('cart', JSON.stringify(cart));
+    formData.append('storeName', storeName);
+
     try {
       const response = await fetch(`${API_BASE_URL}/orderinstantly/place-order`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cart }),
+        body: formData,
       });
+
       if (!response.ok) throw new Error('Error placing order');
       alert('Order placed successfully.');
       setCart([]);
+      setImageFiles([]);
+      setStoreName('');
     } catch (error) {
       console.error('Error:', error);
     }
+  };
+
+  const handleFileChange = (event) => {
+    setImageFiles([...event.target.files]);
   };
 
   return (
@@ -74,6 +87,13 @@ const OrderInstantly = () => {
             ))
           }
         </select>
+        {/* <input
+          type="text"
+          placeholder="Store Name"
+          onChange={(e) => setStoreName(e.target.value)}
+          value={storeName}
+          className="store-name-input"
+        /> */}
       </div>
       <div className="products-container">
         {products && products
@@ -99,6 +119,7 @@ const OrderInstantly = () => {
               <li key={index}>{item.Product_Name} - {item.Brand}</li>
             ))}
           </ul>
+          <input type="file" multiple onChange={handleFileChange} />
           <button onClick={handlePlaceOrder}>Place Order</button>
         </div>
       )}

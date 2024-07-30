@@ -18,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../my-frontend/build')));
+
+
 //app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Database configuration
@@ -34,6 +36,17 @@ const config = {
     trustServerCertificate: true 
   }
 };
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // Attempt to connect and execute a test query
 sql.connect(config).then(pool => {
@@ -1051,17 +1064,7 @@ app.get('/edit/:productId', async (req, res) => {
   }
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
-  }
-});
 
-const upload = multer({ storage: storage });
 
 app.put('/edit/:productId', upload.single('img'), async (req, res) => {
   const { productId } = req.params;
@@ -1244,15 +1247,183 @@ app.get('/qfctable', async (req, res) => {
   }
 });
 
-app.get('/orderinstantly/products', async (req, res) => {
+// app.get('/orderinstantly/products', async (req, res) => {
+//   try {
+//     const pool = await sql.connect(config);
+//     const result = await pool.request()
+//       .query('SELECT * FROM QFCProducts');
+   
+//     res.status(200).json(result.recordset);
+//   } catch (err) {
+//     console.error('SQL error while fetching QFC products:', err);
+//     res.status(500).json({ message: 'Error fetching QFC products' });
+//   }
+// });
+app.get('/products711', async (req, res) => {
   try {
     const pool = await sql.connect(config);
     const result = await pool.request()
-      .query('SELECT * FROM QFCProducts');
-   
+      .query('SELECT * FROM products711');
+
     res.status(200).json(result.recordset);
   } catch (err) {
-    console.error('SQL error while fetching QFC products:', err);
-    res.status(500).json({ message: 'Error fetching QFC products' });
+    console.error('SQL error while fetching products from products711:', err);
+    res.status(500).json({ message: 'Error fetching products from products711' });
+  }
+});
+
+
+// Endpoint to place an order for general users
+app.post('/generaluser/orders', async (req, res) => {
+  let transaction;
+  try {
+    console.log('req.body:', req.body);   // Debugging log
+
+    const { Product_Name, Sku, Quantity, UOM, added_by } = req.body;
+
+    const pool = await sql.connect(config);
+
+    // Start a transaction
+    transaction = new sql.Transaction(pool);
+    await transaction.begin();
+
+    let orderID;
+    const newOrderIDRequest = new sql.Request(transaction);
+    const newOrderIDResult = await newOrderIDRequest.query('SELECT ISNULL(MAX(OrderID), 0) + 1 AS NewOrderID FROM generalorders');
+    orderID = newOrderIDResult.recordset[0].NewOrderID;
+
+    // Insert the order into the generalorders table
+    const insertRequest = new sql.Request(transaction);
+    await insertRequest.input('OrderID', sql.Int, orderID)
+      .input('OrderItemID', sql.Int, 1) // Assuming a single item order for simplicity
+      .input('Sku', sql.NVarChar, Sku)
+      .input('ProductName', sql.NVarChar, Product_Name)
+      .input('Quantity', sql.Int, Quantity)
+      .input('UOM', sql.NVarChar, UOM)
+      .input('AddedBy', sql.NVarChar, added_by)
+      .input('OrderSentStatus', sql.Bit, false)
+      .input('OrderSentDate', sql.DateTime, new Date())
+      .input('OrderStatus', sql.NVarChar, 'Pending')
+      .input('FulfilledDate', sql.DateTime, null)
+      .input('FulfilledBy', sql.NVarChar, null)
+      .query(`
+        INSERT INTO dbo.generalorders (
+          OrderID, OrderItemID, Sku, Product_Name, Quantity, UOM, Added_by, 
+          OrderSentStatus, OrderSentDate, OrderStatus, FulfilledDate, FulfilledBy
+        ) VALUES (
+          @OrderID, @OrderItemID, @Sku, @ProductName, @Quantity, @UOM, @AddedBy, 
+          @OrderSentStatus, @OrderSentDate, @OrderStatus, @FulfilledDate, @FulfilledBy
+        )
+      `);
+
+    await transaction.commit();
+    console.log('Order created successfully for general user:', req.body);
+    res.status(201).json({ message: 'Order created successfully.' });
+  } catch (err) {
+    console.error('SQL error while creating order:', err);
+    if (transaction) {
+      await transaction.rollback();
+    }
+    res.status(500).json({ message: 'Error creating order' });
+  }
+});
+// Endpoint to send the general user order
+app.put('/generaluser/orders/send/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { comments } = req.body; // Extract comments from the request body
+    const pool = await sql.connect(config);
+
+    const qry = `UPDATE generalorders 
+                 SET OrderSentStatus = @OrderSentStatus, 
+                     OrderSentDate = GETDATE(), 
+                     Comments = @Comments 
+                 WHERE OrderID = @OrderId AND OrderSentStatus = 0`;
+    
+    const request = pool.request();
+    request.input('OrderSentStatus', sql.Bit, true);
+    request.input('OrderId', sql.Int, orderId);
+    request.input('Comments', sql.NVarChar, comments || ''); // Add the comments to the request inputs
+    
+    const result = await request.query(qry);
+
+    if (result.rowsAffected[0] > 0) {
+      console.log(`Order ${orderId} marked as sent.`);
+      res.status(200).json({ message: `Order ${orderId} marked as sent.` });
+    } else {
+      console.log(`Order ${orderId} not found or already sent.`);
+      res.status(404).json({ message: `Order ${orderId} not found or already sent.` });
+    }
+  } catch (err) {
+    console.error('SQL error while updating order:', err);
+    res.status(500).json({ message: 'Error updating order status' });
+  }
+});
+
+// Endpoint to delete a product from the general user orders
+app.delete('/generaluser/delete-order-product/:sku', async (req, res) => {
+  try {
+    const { sku } = req.params;
+    const qry = 'DELETE FROM generalorders WHERE Sku = @sku';
+
+    const pool = await sql.connect(config);
+    const request = pool.request();
+    request.input('sku', sql.NVarChar, sku);
+
+    const result = await request.query(qry);
+
+    if (result.rowsAffected[0] > 0) {
+      res.status(200).json({ message: 'Product deleted successfully.' });
+    } else {
+      res.status(404).json({ message: 'Product not found.' });
+    }
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Error deleting product' });
+  }
+});
+
+// Endpoint to edit the quantity for a general user order
+app.put('/generaluser/edit-quantity/:sku', async (req, res) => {
+  try {
+    // Retrieve SKU from the request parameters
+    const { sku } = req.params;
+
+    // Retrieve the new quantity from the request body
+    const { newQuantity } = req.body;
+
+    // Establish a database connection
+    const pool = await sql.connect(config);
+    const qry = `UPDATE generalorders 
+                 SET Quantity = @newQuantity 
+                 WHERE Sku = @sku`;
+
+    // Create a request object
+    const request = pool.request();
+    request.input('newQuantity', sql.Int, newQuantity);
+    request.input('sku', sql.NVarChar, sku);
+
+    // Execute the query
+    const result = await request.query(qry);
+
+    // Check if any rows were affected
+    if (result.rowsAffected[0] > 0) {
+      res.json({ message: 'Quantity updated successfully' });
+    } else {
+      res.status(404).json({ message: 'Order not found' });
+    }
+  } catch (error) {
+    console.error('Error editing quantity:', error);
+    res.status(500).json({ message: 'Error editing quantity' });
+  }
+});
+app.get('/generaluser/orders', async (req, res) => {
+  try {
+    const pool = await sql.connect(config);
+    const result = await pool.request().query('SELECT * FROM generalorders');
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('SQL error while fetching orders:', err);
+    res.status(500).json({ message: 'Error fetching orders' });
   }
 });

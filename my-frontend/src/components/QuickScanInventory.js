@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-//import BarcodeReader from 'react-barcode-reader';
+import { QrReader } from 'react-qr-barcode-scanner';
 
 const QuickScanInventory = () => {
   const [barcode, setBarcode] = useState('');
+  const [scanning, setScanning] = useState(false);
 
-  const handleScan = (data) => {
-    if (data) {
-      setBarcode(data);
+  const handleScan = (result) => {
+    if (result) {
+      setBarcode(result.text);
+      setScanning(false);
     }
   };
 
-  const handleError = (err) => {
-    console.error(err);
+  const handleError = (error) => {
+    console.error("Error scanning barcode: ", error);
+    setScanning(false);
   };
 
   return (
@@ -19,14 +22,22 @@ const QuickScanInventory = () => {
       <h1>QuickScan Inventory</h1>
       <p>Scan the barcode to get the info</p>
 
-      <button onClick={() => alert('Please scan a barcode!')} className="scan-button">
-        Scan Barcode
-      </button>
-{/* 
-      <BarcodeReader
-        onError={handleError}
-        onScan={handleScan}
-      /> */}
+      {!scanning && (
+        <button onClick={() => setScanning(true)} className="scan-button">
+          Scan Barcode
+        </button>
+      )}
+
+      {scanning && (
+        <div className="scanner">
+          <QrReader
+            onResult={handleScan}
+            constraints={{ facingMode: 'environment' }}
+            onError={handleError}
+            style={{ width: '300px' }}
+          />
+        </div>
+      )}
 
       {barcode && (
         <div className="barcode-result">

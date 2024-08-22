@@ -22,11 +22,11 @@ const QuickScanInventory = () => {
       <button onClick={() => alert('Please scan a barcode!')} className="scan-button">
         Scan Barcode
       </button>
-
+{/* 
       <BarcodeReader
         onError={handleError}
         onScan={handleScan}
-      />
+      /> */}
 
       {barcode && (
         <div className="barcode-result">

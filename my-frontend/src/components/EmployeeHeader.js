@@ -13,6 +13,7 @@ const EmployeeHeader = ({ onLogout, username }) => {
         <Link to="/employee/orders" className="header-icon">📦 Orders</Link>
         <Link to="/employee/products" className="header-icon">📦 Products</Link>
         <Link to="/employee/customers" className="header-icon">👥 Customers</Link>
+        <Link to="/employee/quickscan" className="header-icon">📱 QuickScan Inventory</Link> 
         <button className="header-icon" onClick={onLogout}>↩</button>
       </div>
     </header>

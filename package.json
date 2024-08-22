@@ -7,8 +7,5 @@
     },
     "engines": {
         "node": ">=14.0.0 <=20.0.0"
-    },
-    "dependencies": {
-        "react-barcode-reader": "^0.0.2"
     }
 }

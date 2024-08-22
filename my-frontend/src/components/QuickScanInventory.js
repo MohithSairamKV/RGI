@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BarcodeReader from 'react-barcode-reader';
+//import BarcodeReader from 'react-barcode-reader';
 
 const QuickScanInventory = () => {
   const [barcode, setBarcode] = useState('');

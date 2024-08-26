@@ -98,7 +98,7 @@ function App() {
             />
             <Route path="/signup" element={<Signup />} />
             <Route path="/orderinstantly" element={<OrderInstantly />} />
-            <Route path="/employee/quickscan" element={<QuickScanInventory />} />
+          
             <Route
               path="/admin/main"
               element={userRole === 'admin' ? <MainContent username={username} /> : <Navigate replace to="/" />}
@@ -130,6 +130,10 @@ function App() {
             <Route
               path="/employee/customers"
               element={userRole === 'employee' ? <EmployeeCustomers /> : <Navigate replace to="/" />}
+            />
+            <Route
+              path="/employee/quickscan"
+              element={userRole === 'employee' ? <QuickScanInventory /> : <Navigate replace to="/" />}
             />
             <Route
   path="/cart"

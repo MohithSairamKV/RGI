@@ -148,6 +148,33 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ message: 'Error fetching products' });
   }
 });
+app.get('/products/barcode/:barcode', async (req, res) => {
+  const { barcode } = req.params;
+
+  console.log(`Received request to fetch product with barcode: ${barcode}`);
+
+  try {
+    const pool = await sql.connect(config);
+    console.log('Connected to SQL server.');
+    
+    const result = await pool.request()
+      .input('barcode', sql.VarChar, barcode)
+      .query('SELECT * FROM Products WHERE Upc = @barcode');
+    
+    console.log(`Executed query: SELECT * FROM Products WHERE Upc = ${barcode}`);
+
+    if (result.recordset.length > 0) {
+      console.log('Product found:', result.recordset[0]);
+      res.status(200).json(result.recordset[0]); // Return the first matching product
+    } else {
+      console.log('Product not found.');
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (err) {
+    console.error('SQL error while fetching product by barcode:', err);
+    res.status(500).json({ message: 'Error fetching product by barcode' });
+  }
+});
 app.get('/employee/customers', async (req, res) => {
   try {
       await sql.connect(config);
@@ -1271,6 +1298,8 @@ app.get('/products711', async (req, res) => {
     res.status(500).json({ message: 'Error fetching products from products711' });
   }
 });
+
+
 
 
 // Endpoint to place an order for general users

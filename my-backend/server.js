@@ -183,6 +183,79 @@ app.get('/products/search', async (req, res) => {
     res.status(500).json({ message: 'Error fetching product' });
   }
 });
+app.post('/scannedinventory', async (req, res) => {
+  const { store, product, sku, count } = req.body;
+
+  if (!store || !product || !sku || !count) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+    // Connect to the database
+    const pool = await sql.connect(config);
+
+    // Insert data into the scannedinventory table
+    const result = await pool.request()
+      .input('store_name', sql.NVarChar, store)
+      .input('product_sku', sql.NVarChar, sku)
+      .input('product_name', sql.NVarChar, product)
+      .input('count', sql.Int, count)
+      .query(`
+        INSERT INTO scannedinventory (store_name, product_sku, product_name, count)
+        VALUES (@store_name, @product_sku, @product_name, @count)
+      `);
+
+    res.status(201).json({ message: 'Data saved successfully' });
+
+  } catch (error) {
+    console.error('Error saving scanned inventory data:', error);
+    res.status(500).json({ message: 'An error occurred while saving data' });
+  }
+});
+// Endpoint to get all scanned inventory data or filter by store and timestamp
+app.get('/scannedinventory', async (req, res) => {
+  const { store, startDate, endDate } = req.query;
+
+  try {
+    // Connect to the database
+    const pool = await sql.connect(config);
+
+    let query = 'SELECT * FROM scannedinventory WHERE 1=1';
+
+    if (store) {
+      query += ' AND store_name = @store_name';
+    }
+
+    if (startDate) {
+      query += ' AND scanned_at >= @startDate';
+    }
+
+    if (endDate) {
+      query += ' AND scanned_at <= @endDate';
+    }
+
+    const request = pool.request();
+
+    if (store) {
+      request.input('store_name', sql.NVarChar, store);
+    }
+
+    if (startDate) {
+      request.input('startDate', sql.DateTime2, new Date(startDate));
+    }
+
+    if (endDate) {
+      request.input('endDate', sql.DateTime2, new Date(endDate));
+    }
+
+    const result = await request.query(query);
+    res.status(200).json(result.recordset);
+
+  } catch (error) {
+    console.error('Error fetching scanned inventory data:', error);
+    res.status(500).json({ message: 'An error occurred while fetching data' });
+  }
+});
 
 app.get('/employee/customers', async (req, res) => {
   try {

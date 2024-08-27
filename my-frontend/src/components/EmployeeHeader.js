@@ -14,6 +14,7 @@ const EmployeeHeader = ({ onLogout, username }) => {
         <Link to="/employee/products" className="header-icon">📦 Products</Link>
         <Link to="/employee/customers" className="header-icon">👥 Customers</Link>
         <Link to="/employee/quickscan" className="header-icon">📱 QuickScan Inventory</Link> 
+        <Link to="/employee/inventory" className="header-icon">📊 View Inventory</Link> 
         <button className="header-icon" onClick={onLogout}>↩</button>
       </div>
     </header>

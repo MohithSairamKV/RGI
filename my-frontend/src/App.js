@@ -29,6 +29,8 @@ import './App.css';
 import HomeFooter from './components/HomeFooter';
 import OrderInstantly from './components/OrderInstantly';
 import QuickScanInventory from './components/QuickScanInventory';
+import ScannedInventoryPage from './components/ScannedInventoryPage';
+
 function App() {
   const [userRole, setUserRole] = useState(null);
   const [username, setUsername] = useState(null);
@@ -135,6 +137,10 @@ function App() {
               path="/employee/quickscan"
               element={userRole === 'employee' ? <QuickScanInventory /> : <Navigate replace to="/" />}
             />
+             <Route
+        path="/employee/inventory"
+        element={userRole === 'employee' ? <ScannedInventoryPage /> : <Navigate replace to="/" />}
+      />
             <Route
   path="/cart"
   element={(userRole === 'admin' || userRole === 'user' || userRole === 'qfc' || !userRole) ? <OrderList username={username} /> : <Navigate replace to="/" />}

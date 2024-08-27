@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import useZxing from './useZxing'; 
-import { FaBarcode } from 'react-icons/fa';
 
 const QuickScanInventory = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,18 +11,18 @@ const QuickScanInventory = () => {
     onResult: async (result) => {
       const scannedBarcode = result.getText();
       setSearchQuery(scannedBarcode);
-      setIsScanning(false);
+      setIsScanning(false);  // Automatically stop scanning once the barcode is read
       await fetchProductDetails(scannedBarcode);
     },
     onError: (error) => {
       console.error('Barcode scan error:', error);
-      setIsScanning(false);
+      setIsScanning(false);  // Stop scanning if there's an error
     },
   });
 
   const fetchProductDetails = async (query) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/products/search?query=${query}`, {
+      const response = await fetch(`${API_BASE_URL}/products/barcode/${query}`, {
         headers: { 'Accept': 'application/json' },
       });
       if (response.ok) {
@@ -39,8 +38,9 @@ const QuickScanInventory = () => {
     }
   };
 
-  const handleSearch = async () => {
-    await fetchProductDetails(searchQuery);
+  const startScanning = () => {
+    setProductDetails(null);  // Clear previous product details
+    setIsScanning(true);
   };
 
   return (
@@ -55,32 +55,18 @@ const QuickScanInventory = () => {
           style={{ flex: 1, padding: '8px' }}
         />
         <button 
-          onClick={() => setIsScanning(true)} 
+          onClick={startScanning} 
           style={{ padding: '8px', marginLeft: '8px', cursor: 'pointer' }}
         >
-          <FaBarcode />
+          Scan
         </button>
       </div>
 
       {isScanning && (
         <div>
           <video ref={ref} style={{ width: '100%', maxWidth: '300px', marginTop: '10px' }} />
-          <button 
-            onClick={() => setIsScanning(false)} 
-            style={{ marginTop: '10px', padding: '8px 16px' }}
-          >
-            Cancel
-          </button>
+          {!ref.current && <p style={{ color: 'red' }}>Camera is not accessible. Please check your permissions.</p>}
         </div>
-      )}
-
-      {!isScanning && (
-        <button 
-          onClick={handleSearch} 
-          style={{ padding: '8px 16px' }}
-        >
-          Search
-        </button>
       )}
 
       {productDetails && (
@@ -97,7 +83,7 @@ const QuickScanInventory = () => {
         </div>
       )}
 
-      {!productDetails && searchQuery && (
+      {!productDetails && searchQuery && !isScanning && (
         <p style={{ marginTop: '20px' }}>No product details found for this search.</p>
       )}
     </div>

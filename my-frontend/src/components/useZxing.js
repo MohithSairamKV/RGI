@@ -1,5 +1,5 @@
 // useZxing.js
-import { BrowserMultiFormatReader, DecodeHintType, Result } from '@zxing/library';
+import { BrowserMultiFormatReader } from '@zxing/library';
 import { useEffect, useMemo, useRef } from 'react';
 
 const useZxing = ({
@@ -23,12 +23,26 @@ const useZxing = ({
   }, [hints, timeBetweenDecodingAttempts]);
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current) {
+      console.error('Video element not found or ref not attached properly');
+      return;
+    }
+
+    console.log('Starting barcode scanner with constraints:', constraints);
+    
     reader.decodeFromConstraints(constraints, ref.current, (result, error) => {
-      if (result) onResult(result);
-      if (error) onError(error);
+      if (result) {
+        console.log('Barcode scan successful:', result);
+        onResult(result);
+      }
+      if (error) {
+        console.error('Barcode scan error:', error);
+        onError(error);
+      }
     });
+
     return () => {
+      console.log('Resetting barcode reader');
       reader.reset();
     };
   }, [ref, reader]);

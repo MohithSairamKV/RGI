@@ -148,20 +148,28 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ message: 'Error fetching products' });
   }
 });
-app.get('/products/barcode/:barcode', async (req, res) => {
-  const { barcode } = req.params;
+app.get('/products/search', async (req, res) => {
+  const { query } = req.query;
 
-  console.log(`Received request to fetch product with barcode: ${barcode}`);
+  console.log(`Received request to fetch product with query: ${query}`);
 
   try {
     const pool = await sql.connect(config);
     console.log('Connected to SQL server.');
-    
-    const result = await pool.request()
-      .input('barcode', sql.VarChar, barcode)
-      .query('SELECT * FROM Products WHERE Upc = @barcode');
-    
-    console.log(`Executed query: SELECT * FROM Products WHERE Upc = ${barcode}`);
+
+    let result;
+    if (/^\d{12,13}$/.test(query)) {
+      // Assuming barcodes are numeric and 12-13 digits long
+      console.log(`Searching by barcode: ${query}`);
+      result = await pool.request()
+        .input('query', sql.VarChar, query)
+        .query('SELECT * FROM Products WHERE Upc = @query');
+    } else {
+      console.log(`Searching by product name: ${query}`);
+      result = await pool.request()
+        .input('query', sql.VarChar, `%${query}%`)
+        .query('SELECT * FROM Products WHERE Product_Name LIKE @query');
+    }
 
     if (result.recordset.length > 0) {
       console.log('Product found:', result.recordset[0]);
@@ -171,10 +179,11 @@ app.get('/products/barcode/:barcode', async (req, res) => {
       res.status(404).json({ message: 'Product not found' });
     }
   } catch (err) {
-    console.error('SQL error while fetching product by barcode:', err);
-    res.status(500).json({ message: 'Error fetching product by barcode' });
+    console.error('SQL error while fetching product:', err);
+    res.status(500).json({ message: 'Error fetching product' });
   }
 });
+
 app.get('/employee/customers', async (req, res) => {
   try {
       await sql.connect(config);

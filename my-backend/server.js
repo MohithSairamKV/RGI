@@ -67,9 +67,6 @@ app.use((req, res, next) => {
   console.log(`Received request: ${req.method} ${req.url}`);
   next();
 });
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
-});
 
 // Global error handler
 app.use((error, req, res, next) => {
@@ -1578,4 +1575,8 @@ app.get('/generaluser/orders', async (req, res) => {
     console.error('SQL error while fetching orders:', err);
     res.status(500).json({ message: 'Error fetching orders' });
   }
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
 });

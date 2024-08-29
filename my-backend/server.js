@@ -67,7 +67,9 @@ app.use((req, res, next) => {
   console.log(`Received request: ${req.method} ${req.url}`);
   next();
 });
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
+});
 
 // Global error handler
 app.use((error, req, res, next) => {
@@ -256,6 +258,45 @@ app.get('/scannedinventory', async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching data' });
   }
 });
+
+// Endpoint to add a new product to the Products table
+app.post('/products', async (req, res) => {
+  const { Product_Name, sku, Upc, Brand, description_ } = req.body;
+
+  // Validate the required fields
+  if (!Product_Name || !sku || !Upc || !Brand || !description_) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+    // Connect to the database
+    const pool = await sql.connect(config);
+
+    // Insert data into the Products table
+    const result = await pool.request()
+      .input('Product_Name', sql.NVarChar, Product_Name)
+      .input('sku', sql.NVarChar, sku)
+      .input('Upc', sql.NVarChar, Upc)
+      .input('Brand', sql.NVarChar, Brand)
+      .input('description_', sql.NVarChar, description_)
+      // You can add hardcoded values here for the remaining fields if needed
+      .input('img', sql.NVarChar, '') // Assuming you don't have an image for now
+      .input('price', sql.Float, 0) // Hardcoded price value
+      .input('quantity_on_hand', sql.Float, 0) // Hardcoded quantity on hand value
+      .input('ItemType', sql.NVarChar, 'Unknown') // Hardcoded item type value
+      .query(`
+        INSERT INTO Products (Product_Name, sku, Upc, Brand, description_, img, price, quantity_on_hand, ItemType)
+        VALUES (@Product_Name, @sku, @Upc, @Brand, @description_, @img, @price, @quantity_on_hand, @ItemType)
+      `);
+
+    res.status(201).json({ message: 'Product added successfully' });
+
+  } catch (error) {
+    console.error('Error adding new product:', error);
+    res.status(500).json({ message: 'An error occurred while adding the product' });
+  }
+});
+
 
 app.get('/employee/customers', async (req, res) => {
   try {

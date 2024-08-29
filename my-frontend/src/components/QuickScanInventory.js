@@ -10,6 +10,8 @@ const QuickScanInventory = () => {
   const [productDetails, setProductDetails] = useState(null);
   const [selectedStore, setSelectedStore] = useState('');
   const [count, setCount] = useState('');
+  const [showAddItemModal, setShowAddItemModal] = useState(false); // State to control modal visibility
+  const [newItem, setNewItem] = useState({ Product_Name: '', sku: '', Upc: '', Brand: '', description_: '' }); // State for new item
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const stores = [
@@ -128,6 +130,43 @@ const QuickScanInventory = () => {
     }
   };
 
+  const handleAddItemClick = () => {
+    setShowAddItemModal(true); // Show modal when "Add Item" button is clicked
+  };
+
+  const handleAddItemClose = () => {
+    setShowAddItemModal(false); // Close modal
+    setNewItem({ Product_Name: '', sku: '', Upc: '', Brand: '', description_: '' }); // Reset form
+  };
+
+  const handleNewItemChange = (e) => {
+    const { name, value } = e.target;
+    setNewItem((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveNewItem = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newItem),
+      });
+
+      if (response.ok) {
+        alert('New item added successfully!');
+        handleAddItemClose(); // Close the modal after successful addition
+      } else {
+        console.error('Error adding new item:', response.statusText);
+        alert('Failed to add new item.');
+      }
+    } catch (error) {
+      console.error('Error adding new item:', error);
+      alert('Failed to add new item.');
+    }
+  };
+
   return (
     <div>
       <h1>Scan Inventory</h1>
@@ -170,6 +209,13 @@ const QuickScanInventory = () => {
           Scan
         </button>
       </div>
+
+      <button 
+        onClick={handleAddItemClick} 
+        style={{ padding: '10px', marginBottom: '20px', cursor: 'pointer' }}
+      >
+        Add Item
+      </button>
 
       {isScanning && (
         <div>
@@ -214,6 +260,63 @@ const QuickScanInventory = () => {
               Send
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Modal for Adding New Item */}
+      {showAddItemModal && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#fff',
+          padding: '20px',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000
+        }}>
+          <h2>Add New Item</h2>
+          <input 
+            type="text" 
+            placeholder="Product Name" 
+            name="Product_Name" 
+            value={newItem.Product_Name} 
+            onChange={handleNewItemChange} 
+            style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '100%' }}
+          />
+          <input 
+            type="text" 
+            placeholder="SKU" 
+            name="sku" 
+            value={newItem.sku} 
+            onChange={handleNewItemChange} 
+            style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '100%' }}
+          />
+          <input 
+            type="text" 
+            placeholder="UPC" 
+            name="Upc" 
+            value={newItem.Upc} 
+            onChange={handleNewItemChange} 
+            style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '100%' }}
+          />
+          <input 
+            type="text" 
+            placeholder="Brand" 
+            name="Brand" 
+            value={newItem.Brand} 
+            onChange={handleNewItemChange} 
+            style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '100%' }}
+          />
+          <textarea 
+            placeholder="Description" 
+            name="description_" 
+            value={newItem.description_} 
+            onChange={handleNewItemChange} 
+            style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '100%' }}
+          ></textarea>
+          <button onClick={handleSaveNewItem} style={{ padding: '10px', marginRight: '10px', cursor: 'pointer' }}>Save</button>
+          <button onClick={handleAddItemClose} style={{ padding: '10px', cursor: 'pointer' }}>Cancel</button>
         </div>
       )}
     </div>

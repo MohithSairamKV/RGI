@@ -158,8 +158,15 @@ const HomeContent = ({ onLogin }) => {
   };
 
   return (
-    <main style={{ flex: 1, display: 'flex', padding: '40px 20px', background: '#f8f9fa', justifyContent: 'center', alignItems: 'center' }}>
+    <main style={{ flex: 1, display: 'flex', padding: ' 10px', background: '#f8f9fa', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ maxWidth: '1200px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        
+        {/* Hero Section */}
+        <div style={{ flex: '1 1 100%', marginBottom: '00px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '36px', color: '#333' }}>Welcome to Reshmi's Group</h1>
+          
+        </div>
+
         <div style={{ flex: '1 1 45%', marginBottom: '20px' }}>
           <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>About Us</h2>
           <p style={{ fontSize: '16px', lineHeight: '1.5' }}>
@@ -168,45 +175,120 @@ const HomeContent = ({ onLogin }) => {
           <p style={{ fontSize: '16px', lineHeight: '1.5' }}>
             <strong> Our Partner Brands</strong>
           </p>
-          <img src={brandsImage} alt="Brands" style={{ width: '100%', marginTop: '20px' }} />
+          <img src={brandsImage} alt="Brands" style={{ width: '100%', marginTop: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }} />
           <p style={{ fontSize: '16px', lineHeight: '1.5', marginTop: '20px' }}>
             Hurry up and create your account, over 2000 items are waiting for you!
           </p>
         </div>
+
         <div style={{ flex: '1 1 45%', marginBottom: '20px' }}>
           {!showSignUp ? (
-            <form onSubmit={handleSignIn} style={{ background: '#fff', padding: '30px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-              <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>Sign In</h1>
-              <label style={{ display: 'block', marginBottom: '10px', fontSize: '16px' }}>Email</label>
-              <input type="email" value={email} onChange={handleEmailChange} required style={{ width: '100%', padding: '12px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }} />
-              {errEmail && <div style={{ color: 'red', marginBottom: '10px' }}>{errEmail}</div>}
-              <label style={{ display: 'block', marginBottom: '10px', fontSize: '16px' }}>Password</label>
-              <input type="password" value={password} onChange={handlePasswordChange} required style={{ width: '100%', padding: '12px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }} />
-              {errPassword && <div style={{ color: 'red', marginBottom: '10px' }}>{errPassword}</div>}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <div>
-                  <input type="checkbox" checked={rememberMe} onChange={handleRememberMe} />
-                  <label style={{ marginLeft: '5px' }}>Remember me</label>
-                </div>
-                <Link to="/forgot-password" style={{ color: '#007bff', textDecoration: 'none' }}>Forgot Password?</Link>
+            <form onSubmit={handleSignIn} style={{ 
+              background: '#fff', 
+              padding: '40px', 
+              borderRadius: '10px', 
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', 
+              maxWidth: '400px', 
+              margin: '0 auto' 
+          }}>
+            <h1 style={{ marginBottom: '20px', fontSize: '26px', fontWeight: 'bold' }}>Sign In</h1>
+            
+            <label style={{ display: 'block', marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>Email</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={handleEmailChange} 
+              required 
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                marginBottom: '15px', 
+                border: '1px solid #ccc', 
+                borderRadius: '6px', 
+                fontSize: '16px',
+                boxSizing: 'border-box',
+                transition: 'border-color 0.3s',
+              }} 
+            />
+            {errEmail && <div style={{ color: 'red', marginBottom: '15px', fontSize: '14px' }}>{errEmail}</div>}
+            
+            <label style={{ display: 'block', marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={handlePasswordChange} 
+              required 
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                marginBottom: '15px', 
+                border: '1px solid #ccc', 
+                borderRadius: '6px', 
+                fontSize: '16px',
+                boxSizing: 'border-box',
+                transition: 'border-color 0.3s',
+              }} 
+            />
+            {errPassword && <div style={{ color: 'red', marginBottom: '15px', fontSize: '14px' }}>{errPassword}</div>}
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <input type="checkbox" checked={rememberMe} onChange={handleRememberMe} />
+                <label style={{ marginLeft: '5px', fontSize: '14px' }}>Remember me</label>
               </div>
-              <button type="submit" style={{ width: '100%', padding: '12px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontSize: '16px', cursor: 'pointer' }}>Sign In</button>
-              <p style={{ marginTop: '10px', fontSize: '14px' }}>Don’t have an account? <span style={{ color: '#007bff', textDecoration: 'none', cursor: 'pointer' }} onClick={() => setShowSignUp(true)}>Sign up</span></p>
-            </form>
+              <Link to="/forgot-password" style={{ color: '#007bff', textDecoration: 'none', fontSize: '14px' }}>Forgot Password?</Link>
+            </div>
+            
+            <button 
+              type="submit" 
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                background: 'linear-gradient(90deg, #007bff, #0056b3)', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: '6px', 
+                fontSize: '16px', 
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background 0.3s',
+              }}
+              onMouseOver={(e) => e.target.style.background = 'linear-gradient(90deg, #0056b3, #007bff)'}
+              onMouseOut={(e) => e.target.style.background = 'linear-gradient(90deg, #007bff, #0056b3)'}
+            >
+              Sign In
+            </button>
+            
+            <p style={{ marginTop: '15px', fontSize: '14px', textAlign: 'center' }}>
+              Don’t have an account? 
+              <span 
+                style={{ 
+                  color: '#007bff', 
+                  textDecoration: 'none', 
+                  cursor: 'pointer', 
+                  fontWeight: '500' 
+                }} 
+                onClick={() => setShowSignUp(true)}
+              >
+                Sign up
+              </span>
+            </p>
+          </form>
+          
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {showSignUpSuccess && (
-                <div style={{ marginBottom: '20px' }}>
+                <div style={{ marginBottom: '20px', textAlign: 'center', color: '#28a745' }}>
                   <h4>Success!</h4>
                   <p>{successMsg}</p>
                 </div>
               )}
-              <div style={{ width: '100%', marginBottom: '20px' }}>
+              <div style={{ width: '100%', marginBottom: '20px', textAlign: 'center' }}>
                 <h1>Welcome to Our Service!</h1>
                 <p>Sign up today to get access to premium features:</p>
-                <ul>
-                  <li><BsCheckCircleFill /> Exclusive access</li>
-                  <li><BsCheckCircleFill /> 24/7 support</li>
+                <ul style={{ listStyle: 'none', paddingLeft: '0' }}>
+                  <li><BsCheckCircleFill color="#28a745" /> Exclusive access</li>
+                  <li><BsCheckCircleFill color="#28a745" /> 24/7 support</li>
                 </ul>
               </div>
               <form onSubmit={handleSignUpSubmit} style={{ background: '#fff', padding: '30px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', width: '100%' }}>

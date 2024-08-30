@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 
 const ScannedInventoryPage = () => {
   const [scannedData, setScannedData] = useState([]);
@@ -63,12 +64,19 @@ const ScannedInventoryPage = () => {
     setEndDate(event.target.value);
   };
 
+  const downloadExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(scannedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "ScannedInventory");
+    XLSX.writeFile(wb, "ScannedInventory.xlsx");
+  };
+
   return (
     <div>
       <h1>Scanned Inventory</h1>
       
       {/* Filters for Store and Date */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '20px', alignItems: 'center' }}>
         <div>
           <label htmlFor="store-select" style={{ marginRight: '10px' }}>Filter by Store:</label>
           <select 
@@ -105,6 +113,11 @@ const ScannedInventoryPage = () => {
             style={{ padding: '8px' }}
           />
         </div>
+
+        {/* Download as Excel Button */}
+        <button onClick={downloadExcel} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+          Download as Excel
+        </button>
       </div>
 
       {/* Table to Display Scanned Inventory */}

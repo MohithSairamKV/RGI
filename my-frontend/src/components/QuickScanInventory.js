@@ -16,9 +16,12 @@ const QuickScanInventory = () => {
 
   const stores = [
     'QFC 808',
+    'QFC 819',
     'QFC 820',
     'QFC 826',
     'QFC 827',
+    'QFC 850',
+    'QFC 856',
     'QFC 860',
     'QFC 874',
     'QFC 871',
@@ -26,7 +29,8 @@ const QuickScanInventory = () => {
     'H Mart Redmond',
     'H Mart Seattle',
     'H Mart Seattle Broadway',
-    'H Mart Lynnwood'
+    'H Mart Lynnwood',
+    '7-Eleven'
   ];
 
   useEffect(() => {

@@ -397,23 +397,58 @@ app.get('/employee/orders/:clientName/:orderType', async (req, res) => {
 });
 
 // API Endpoint for specific order details
+// app.get('/employee/orders/:orderId/details', async (req, res) => {
+//   try {
+//     const { orderId } = req.params;
+//     console.log(`Fetching details for order ID: ${orderId}`); // Debug log
+
+//     const pool = await sql.connect(config);
+//     const result = await pool.request()
+//       .input('OrderID', sql.Int, orderId)
+//       .query('SELECT OrderId, OrderItemID, Sku, Product_Name, Quantity, OrderStatus, OrderSentDate, FulfilledDate FROM Orders WHERE OrderID = @OrderID');
+
+//     console.log('Query result:', result.recordset); // Debug log
+//     res.status(200).json(result.recordset);
+//   } catch (err) {
+//     console.error('SQL error while fetching order details:', err);
+//     res.status(500).json({ message: 'Error fetching order details' });
+//   }
+// });
 app.get('/employee/orders/:orderId/details', async (req, res) => {
   try {
     const { orderId } = req.params;
     console.log(`Fetching details for order ID: ${orderId}`); // Debug log
 
+    // Database connection
     const pool = await sql.connect(config);
-    const result = await pool.request()
-      .input('OrderID', sql.Int, orderId)
-      .query('SELECT OrderId, OrderItemID, Sku, Product_Name, Quantity, OrderStatus, OrderSentDate, FulfilledDate FROM Orders WHERE OrderID = @OrderID');
+    console.log('Database connection established successfully'); // Debug log
 
-    console.log('Query result:', result.recordset); // Debug log
-    res.status(200).json(result.recordset);
+    try {
+      const result = await pool.request()
+        .input('OrderID', sql.Int, orderId)
+        .query('SELECT * FROM Orders WHERE OrderID = @OrderID');
+
+      console.log('SQL query executed successfully'); // Debug log
+      console.log('Number of rows returned:', result.recordset.length); // Debug log
+
+      if (result.recordset.length === 0) {
+        console.log('No records found for the given OrderID'); // Debug log
+        res.status(404).json({ message: 'No order details found for the given Order ID' });
+      } else {
+        res.status(200).json(result.recordset);
+      }
+    } catch (queryError) {
+      console.error('Error executing SQL query:', queryError);
+      res.status(500).json({ message: 'Error fetching order details' });
+    }
+
   } catch (err) {
-    console.error('SQL error while fetching order details:', err);
+    console.error('SQL error while fetching order details:', err.stack); // Detailed error log
     res.status(500).json({ message: 'Error fetching order details' });
   }
 });
+
+
 
 
 

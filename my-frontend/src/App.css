@@ -1,4 +1,5 @@
-html, body {
+
+/* html, body {
   height: 100%;
   margin: 0;
   display: flex;
@@ -739,3 +740,32 @@ footer a:hover {
 }
 
 
+/* Mobile specific styles */
+.mobile-view {
+  font-size: 14px;
+  padding: 10px;
+}
+
+.mobile-view .header {
+  flex-direction: column;
+  text-align: center;
+}
+
+.mobile-view .header-logo img {
+  height: 40px;
+}
+
+/* Desktop specific styles */
+.desktop-view {
+  font-size: 16px;
+  padding: 20px;
+}
+
+.desktop-view .header {
+  flex-direction: row;
+  text-align: left;
+}
+
+.desktop-view .header-logo img {
+  height: 60px;
+}

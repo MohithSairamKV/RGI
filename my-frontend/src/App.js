@@ -36,6 +36,7 @@ function App() {
   const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isNavOpen, setIsNavOpen] = useState(true);
+  
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);

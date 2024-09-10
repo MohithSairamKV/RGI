@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/ethnic food distributor.png'; // Adjust the path to your actual logo image file
 
 const EmployeeHeader = ({ onLogout, username }) => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <header>
       <Link to="/" className="header-logo">
         <img src={logo} alt="Company Logo" />
       </Link>
-      <div className="header-nav">
+      <div className="header-menu-icon" onClick={toggleDropdown}>
+        {/* You can use an icon library like FontAwesome for the hamburger icon */}
+        <span>&#9776;</span>
+      </div>
+      <div className={`header-nav ${isDropdownOpen ? 'dropdown-open' : ''}`}>
         <span className="header-greeting">Welcome, {username || 'Guest'}!</span>
         <Link to="/employee/orders" className="header-icon">📦 Orders</Link>
         <Link to="/employee/products" className="header-icon">📦 Products</Link>

@@ -263,26 +263,18 @@ input[type="text"], input[type="file"] {
   background-color: darkgreen;
 }
 
-/* Header Styles */
-header {
-  background: linear-gradient(90deg, #4b6cb7, #182848);
-  padding: 10px 20px; /* Increased padding for better spacing */
+/* General header styling */
+.header {
   display: flex;
   align-items: center;
-  color: #fff;
-  height: 100px; /* Fixed header height */
   justify-content: space-between;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.header-logo {
-  display: flex;
-  align-items: center;
-  margin-left: 40px; /* Move the logo 20px to the right */
+  padding: 10px 20px;
+  background-color: #182848;
+  color: #fff;
 }
 
 .header-logo img {
-  height: 60px; /* Adjust the height as needed */
+  height: 40px;
   width: auto;
 }
 
@@ -291,23 +283,61 @@ header {
   align-items: center;
 }
 
-.header-greeting {
-  margin-right: 30px;
-  font-weight: bold;
-  color: #fff;
-}
-
 .header-icon {
-  margin-right: 30px;
-  font-size: 20px;
-  text-decoration: none;
+  margin-left: 20px;
   color: #fff;
-  display: flex;
-  align-items: center;
+  text-decoration: none;
 }
 
 .header-icon:hover {
-  color: #ffeb3b; /* Change color on hover */
+  color: #ffeb3b;
+}
+
+/* Hide the menu icon (hamburger) on desktop */
+.header-menu-icon {
+  display: none;
+}
+
+/* Dropdown styling for mobile */
+@media (max-width: 768px) {
+  .header-nav {
+    display: none; /* Hide the header navigation on mobile */
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: #182848;
+    color: #fff;
+    width: 200px;
+    flex-direction: column;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .header-nav.dropdown-open {
+    display: flex; /* Show dropdown when active */
+  }
+
+  .header-nav a, .header-nav button {
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #fff;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+  }
+
+  .header-nav a:hover, .header-nav button:hover {
+    background-color: #4b6cb7;
+  }
+
+  /* Show the menu icon on mobile */
+  .header-menu-icon {
+    display: block;
+    cursor: pointer;
+    color: #fff;
+    font-size: 24px;
+  }
 }
 
 button.header-icon {

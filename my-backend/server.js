@@ -211,6 +211,41 @@ app.post('/scannedinventory', async (req, res) => {
     res.status(500).json({ message: 'An error occurred while saving data' });
   }
 });
+app.get('/scannedinventory/last', async (req, res) => {
+  const { barcode, store } = req.query;
+
+  if (!barcode || !store) {
+    return res.status(400).json({ message: 'Barcode and store are required' });
+  }
+
+  try {
+    // Connect to the database
+    const pool = await sql.connect(config);
+
+    // Query the latest scanned count for the given store and barcode
+    const result = await pool.request()
+      .input('store_name', sql.NVarChar, store)
+      .input('barcode', sql.NVarChar, barcode)
+      .query(`
+        SELECT TOP 1 count
+        FROM scannedinventory
+        WHERE store_name = @store_name AND product_sku = @barcode
+        ORDER BY id DESC
+      `);
+
+    if (result.recordset.length > 0) {
+      const lastScannedCount = result.recordset[0].count;
+      res.status(200).json({ count: lastScannedCount });
+    } else {
+      res.status(404).json({ message: 'No records found for this store and barcode' });
+    }
+
+  } catch (error) {
+    console.error('Error fetching last scanned count:', error);
+    res.status(500).json({ message: 'An error occurred while fetching the last scanned count' });
+  }
+});
+
 // Endpoint to get all scanned inventory data or filter by store and timestamp
 app.get('/scannedinventory', async (req, res) => {
   const { store, startDate, endDate } = req.query;

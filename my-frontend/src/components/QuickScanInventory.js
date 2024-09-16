@@ -10,8 +10,9 @@ const QuickScanInventory = () => {
   const [productDetails, setProductDetails] = useState(null);
   const [selectedStore, setSelectedStore] = useState('');
   const [count, setCount] = useState('');
-  const [showAddItemModal, setShowAddItemModal] = useState(false); // State to control modal visibility
-  const [newItem, setNewItem] = useState({ Product_Name: '', sku: '', Upc: '', Brand: '', description_: '' }); // State for new item
+  const [lastScannedCount, setLastScannedCount] = useState(null); // State for last scanned count
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [newItem, setNewItem] = useState({ Product_Name: '', sku: '', Upc: '', Brand: '', description_: '' });
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const stores = [
@@ -50,6 +51,7 @@ const QuickScanInventory = () => {
           setScannedBarcode(barcode);
           setIsScanning(false);  // Automatically stop scanning once the barcode is read
           fetchProductDetails(barcode);
+          fetchLastScannedCount(barcode, selectedStore); // Fetch last scanned count
         } else if (error && !(error.name === 'NotFoundException')) {
           console.error('Barcode scan error:', error);
           setCameraError('Camera error occurred. Please try again.');
@@ -61,7 +63,7 @@ const QuickScanInventory = () => {
         codeReader.reset();
       };
     }
-  }, [isScanning]);
+  }, [isScanning, selectedStore]);
 
   const startScanning = () => {
     setCameraError('');
@@ -85,6 +87,24 @@ const QuickScanInventory = () => {
     } catch (error) {
       console.error('Error fetching product details:', error);
       setProductDetails(null);
+    }
+  };
+
+  const fetchLastScannedCount = async (barcode, store) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/scannedinventory/last?barcode=${barcode}&store=${store}`, {
+        headers: { 'Accept': 'application/json' },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLastScannedCount(data.count || 'No previous count found');
+      } else {
+        console.error('Error fetching last scanned count:', response.statusText);
+        setLastScannedCount(null);
+      }
+    } catch (error) {
+      console.error('Error fetching last scanned count:', error);
+      setLastScannedCount(null);
     }
   };
 
@@ -124,6 +144,7 @@ const QuickScanInventory = () => {
         setProductDetails(null);  // Clear product details
         setSearchQuery('');  // Reset search query
         setCount('');  // Clear count field
+        setLastScannedCount(null);  // Clear last scanned count
       } else {
         console.error('Error sending data:', response.statusText);
         alert('Failed to send data.');
@@ -246,6 +267,13 @@ const QuickScanInventory = () => {
             alt={productDetails.Product_Name} 
             style={{ width: '200px', height: 'auto' }} 
           />
+
+          {/* Display Last Scanned Count */}
+          {lastScannedCount !== null && (
+            <div style={{ marginTop: '20px' }}>
+              <p><strong>Last Scanned Count:</strong> {lastScannedCount}</p>
+            </div>
+          )}
 
           {/* Input for Count and Send Button */}
           <div style={{ marginTop: '20px' }}>

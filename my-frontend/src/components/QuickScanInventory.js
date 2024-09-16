@@ -92,7 +92,7 @@ const QuickScanInventory = () => {
 
   const fetchLastScannedCount = async (barcode, store) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/scannedinventory/last?barcode=${barcode}&store=${store}`, {
+      const response = await fetch(`${API_BASE_URL}/scannedinventory/last?sku=${productDetails.sku}&store=${store}`, {
         headers: { 'Accept': 'application/json' },
       });
       if (response.ok) {

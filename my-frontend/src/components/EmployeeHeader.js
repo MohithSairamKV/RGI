@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaBars } from 'react-icons/fa'; // Import FontAwesome hamburger icon
 import logo from '../assets/images/ethnic food distributor.png'; // Adjust the path to your actual logo image file
 
 const EmployeeHeader = ({ onLogout, username }) => {
@@ -15,8 +16,7 @@ const EmployeeHeader = ({ onLogout, username }) => {
         <img src={logo} alt="Company Logo" />
       </Link>
       <div className="header-menu-icon" onClick={toggleDropdown}>
-        {/* You can use an icon library like FontAwesome for the hamburger icon */}
-        
+        <FaBars /> {/* FontAwesome hamburger icon */}
       </div>
       <div className={`header-nav ${isDropdownOpen ? 'dropdown-open' : ''}`}>
         <span className="header-greeting">Welcome, {username || 'Guest'}!</span>

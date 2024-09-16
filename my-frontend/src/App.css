@@ -264,74 +264,69 @@ input[type="text"], input[type="file"] {
   background-color: darkgreen;
 }
 
-header {
+.header {
   background: linear-gradient(90deg, #4b6cb7, #182848);
   padding: 10px 20px;
   display: flex;
   align-items: center;
   color: #fff;
-  height: 100px; /* Fixed header height */
   justify-content: space-between;
 }
 
 .header-logo img {
-  max-width: 100px; /* Adjust the size of the logo */
+  max-width: 100px;
   height: auto;
 }
 
 .header-menu-icon {
-  display: block; /* Ensure the hamburger menu is visible on mobile */
+  display: none; /* Hidden on desktop */
   cursor: pointer;
   font-size: 24px;
-  color: #fff; /* Set the color to make it visible */
-  z-index: 1001; /* Ensure it stays above other content */
+  color: #fff; /* Ensure it's visible */
 }
 
 .header-nav {
-  display: none; /* Start with the menu hidden on mobile */
-  position: absolute;
-  top: 60px; /* Position the dropdown below the header */
-  left: 0;
-  right: 0;
-  background-color: #fff; /* Background for the dropdown */
-  z-index: 1000; /* Ensure the dropdown is above other content */
-  flex-direction: column; /* Stack items vertically */
-  gap: 10px;
-  padding: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 
 .header-nav a,
 .header-nav button {
   text-decoration: none;
   font-size: 16px;
-  color: #000;
+  color: #fff;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px 0; /* Add padding for touch-friendly size */
-  width: 100%;
-  text-align: center; /* Center-align the text for better visibility */
 }
 
 .header-nav.dropdown-open {
-  display: flex; /* Show the dropdown when menu icon is clicked */
+  flex-direction: column;
 }
 
 @media screen and (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: center;
+  .header-menu-icon {
+    display: block; /* Show hamburger menu on mobile */
+  }
+
+  .header-nav {
+    display: none;
   }
 
   .header-nav.dropdown-open {
-    display: flex; /* Ensure dropdown is visible when open */
-  }
-
-  .header-logo img {
-    max-width: 100px;
+    display: flex; /* Show dropdown when icon is clicked */
+    position: absolute;
+    top: 60px; /* Position below the header */
+    left: 0;
+    right: 0;
+    background-color: #182848;
+    flex-direction: column;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
 }
+
 
 
 button.header-icon {

@@ -16,7 +16,7 @@ const EmployeeHeader = ({ onLogout, username }) => {
       </Link>
       <div className="header-menu-icon" onClick={toggleDropdown}>
         {/* You can use an icon library like FontAwesome for the hamburger icon */}
-        <span>&#9776;</span>
+        
       </div>
       <div className={`header-nav ${isDropdownOpen ? 'dropdown-open' : ''}`}>
         <span className="header-greeting">Welcome, {username || 'Guest'}!</span>

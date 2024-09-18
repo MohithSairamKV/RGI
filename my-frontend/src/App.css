@@ -12,9 +12,62 @@
   flex-direction: column;
 }
 
-/* The main content wrapper should flex to fill the remaining space */
+/* Main layout container */
+.main-layout {
+  display: flex; /* Enable flexbox to align sidebar and content */
+  align-items: flex-start; /* Align items to the top */
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px; /* Set a fixed width for the sidebar */
+  padding: 20px;
+  background-color: #f8f8f8; /* Light background color */
+  border-right: 1px solid #ddd; /* Border to separate from content */
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+
+/* Main content styles */
 .main-content {
-  flex: 1;
+  flex-grow: 1; /* Allow content to grow and fill remaining space */
+  padding: 20px;
+}
+
+/* Product container inside main content */
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust grid columns */
+  gap: 20px;
+}
+
+/* Sidebar filter category styles */
+.filter-category {
+  margin-bottom: 20px;
+}
+
+.filter-category h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.filter-category ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filter-category li {
+  margin-bottom: 8px;
+}
+
+.filter-category li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+}
+
+.filter-category li a:hover {
+  color: #007bff; /* Highlight on hover */
 }
 /* Styles for the product container */
 .products-container {

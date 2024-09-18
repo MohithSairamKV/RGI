@@ -86,9 +86,35 @@ function CustomerContent({ username }) {
         setPopupVisible(true);
     };
 
+    const handleBrandClick = (brand) => {
+        setSelectedBrand(brand === selectedBrand ? '' : brand);
+    };
+
     return (
-        <div>
-            <div className="header-controls">
+        <div className="main-layout">
+            <div className="sidebar">
+                <div className="filter-category">
+                    <h3>Filter by Brand</h3>
+                    <ul>
+                        {products && [...new Set(products.map((product) => product.Brand))]
+                            .map((brand, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleBrandClick(brand)}
+                                    style={{
+                                        cursor: 'pointer',
+                                        color: brand === selectedBrand ? '#007bff' : '#333',
+                                        fontWeight: brand === selectedBrand ? 'bold' : 'normal',
+                                    }}
+                                >
+                                    {brand}
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+            </div>
+
+            <div className="main-content">
                 <input
                     type="text"
                     placeholder="Search products..."
@@ -96,30 +122,23 @@ function CustomerContent({ username }) {
                     value={searchTerm}
                     className="search-bar"
                 />
-                <select onChange={(e) => setSelectedBrand(e.target.value)} className="brand-filter">
-                    <option value="">Filter by Brand</option>
-                    {products && [...new Set(products.map((product) => product.Brand))]
-                        .map((brand, index) => (
-                            <option key={index} value={brand}>{brand}</option>
-                        ))
-                    }
-                </select>
+                <div className="products-container">
+                    {products && products
+                        .filter((product) =>
+                            (product.Product_Name && product.Product_Name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+                            (selectedBrand ? product.Brand === selectedBrand : true)
+                        )
+                        .map((product, index) => (
+                            <div key={index} className="product-card">
+                                <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
+                                <h3>{product.Product_Name}</h3>
+                                <p>Brand : {product.Brand}</p>
+                                <button onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
+                            </div>
+                        ))}
+                </div>
             </div>
-            <div className="products-container">
-                {products && products
-                    .filter((product) => 
-                        (product.Product_Name && product.Product_Name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-                        (selectedBrand ? product.Brand === selectedBrand : true)
-                    )
-                    .map((product, index) => (
-                        <div key={index} className="product-card">
-                            <img src={`${API_BASE_URL}/${product.img}`} alt={product.Product_Name} />
-                            <h3>{product.Product_Name}</h3>
-                            <p>Brand : {product.Brand}</p>
-                            <button onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
-                        </div>
-                    ))}
-            </div>
+
             {popupVisible && <ProductPopup product={selectedProduct} username={username} onClose={() => setPopupVisible(false)} />}
         </div>
     );

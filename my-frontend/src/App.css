@@ -11,46 +11,35 @@
   display: flex;
   flex-direction: column;
 }
-
 /* Main layout container */
 .main-layout {
-  display: flex; /* Enable flexbox to align sidebar and content */
-  align-items: flex-start; /* Align items to the top */
+  display: flex;
+  align-items: flex-start;
 }
 
 /* Sidebar styles */
 .sidebar {
-  width: 250px; /* Set a fixed width for the sidebar */
+  width: 250px;
   padding: 20px;
-  background-color: #f8f8f8; /* Light background color */
-  border-right: 1px solid #ddd; /* Border to separate from content */
-  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  background-color: #f8f8f8;
+  border-right: 1px solid #ddd;
+  flex-shrink: 0;
 }
 
 /* Main content styles */
 .main-content {
-  flex-grow: 1; /* Allow content to grow and fill remaining space */
+  flex-grow: 1;
   padding: 20px;
 }
 
 /* Product container inside main content */
 .products-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust grid columns */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
 /* Sidebar filter category styles */
-.filter-category {
-  margin-bottom: 20px;
-}
-
-.filter-category h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
 .filter-category ul {
   list-style: none;
   padding: 0;
@@ -58,17 +47,32 @@
 
 .filter-category li {
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
-.filter-category li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 16px;
+.filter-category li.selected {
+  color: #007bff;
+  font-weight: bold;
 }
 
-.filter-category li a:hover {
-  color: #007bff; /* Highlight on hover */
+/* Media query for small screens */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; /* Hide sidebar on small screens */
+  }
+
+  .mobile-filter {
+    display: block; /* Show mobile dropdown on small screens */
+    width: 100%;
+    margin-bottom: 20px;
+  }
 }
+
+/* Default state hides mobile filter on large screens */
+.mobile-filter {
+  display: none;
+}
+
 /* Styles for the product container */
 .products-container {
   display: grid;

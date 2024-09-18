@@ -8,78 +8,41 @@ function CustomerContent({ username }) {
     const [selectedBrand, setSelectedBrand] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [excelData, setExcelData] = useState(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // State to track if the screen is mobile-sized
 
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/products`, {
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const responseBody = await response.json();
-            setProducts(responseBody);
-        } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
-        }
+    // Function to detect window resizing and adjust isMobile state
+    const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
     };
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    const saveExcelDataToDatabase = async (data) => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/save-excel`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            if (!response.ok) throw new Error('Error saving Excel data');
-            alert('Excel data saved to the database successfully.');
-            fetchProducts();
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const binaryString = event.target.result;
-            const workbook = XLSX.read(binaryString, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const data = XLSX.utils.sheet_to_json(worksheet);
-            setExcelData(data);
-            saveExcelDataToDatabase(data);
-        };
-        reader.readAsBinaryString(file);
-    };
-
-    const deleteExcelDataFromDatabase = async () => {
-        if (window.confirm('Are you sure you want to delete the Excel data?')) {
+        const fetchProducts = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/delete-excel`, {
-                    method: 'DELETE',
+                const response = await fetch(`${API_BASE_URL}/products`, {
+                    headers: { 'Accept': 'application/json' }
                 });
-                if (!response.ok) throw new Error('Error deleting Excel data');
-                setExcelData(null);
-                alert('Excel data deleted from the database successfully.');
-                fetchProducts();
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseBody = await response.json();
+                setProducts(responseBody);
             } catch (error) {
-                console.error('Error:', error);
+                console.error('There has been a problem with your fetch operation:', error);
             }
-        }
-    };
+        };
+
+        fetchProducts();
+
+        // Add event listener to handle window resizing
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup event listener on component unmount
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleAddToCartClick = (product) => {
         setSelectedProduct(product);
@@ -92,27 +55,36 @@ function CustomerContent({ username }) {
 
     return (
         <div className="main-layout">
-            <div className="sidebar">
-                <div className="filter-category">
-                    <h3>Filter by Brand</h3>
-                    <ul>
-                        {products && [...new Set(products.map((product) => product.Brand))]
-                            .map((brand, index) => (
+            {/* Conditionally render sidebar or mobile filter based on screen size */}
+            {isMobile ? (
+                <select 
+                    className="mobile-filter" 
+                    onChange={(e) => setSelectedBrand(e.target.value)} 
+                    value={selectedBrand}
+                >
+                    <option value="">Filter by Brand</option>
+                    {products && [...new Set(products.map((product) => product.Brand))].map((brand, index) => (
+                        <option key={index} value={brand}>{brand}</option>
+                    ))}
+                </select>
+            ) : (
+                <div className="sidebar">
+                    <div className="filter-category">
+                        <h3>Filter by Brand</h3>
+                        <ul>
+                            {products && [...new Set(products.map((product) => product.Brand))].map((brand, index) => (
                                 <li
                                     key={index}
                                     onClick={() => handleBrandClick(brand)}
-                                    style={{
-                                        cursor: 'pointer',
-                                        color: brand === selectedBrand ? '#007bff' : '#333',
-                                        fontWeight: brand === selectedBrand ? 'bold' : 'normal',
-                                    }}
+                                    className={brand === selectedBrand ? 'selected' : ''}
                                 >
                                     {brand}
                                 </li>
                             ))}
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className="main-content">
                 <input

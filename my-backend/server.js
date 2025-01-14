@@ -1524,6 +1524,46 @@ app.get('/products711', async (req, res) => {
 });
 
 
+app.get('/api/itemlist', async (req, res) => {
+  try {
+    const pool = await sql.connect(config);
+    const result = await pool.request().query('SELECT * FROM ItemList');
+    res.status(200).json(result.recordset);
+  } catch (err) {
+    console.error('Error fetching item list:', err);
+    res.status(500).send('<h1>Internal Server Error</h1>'); // Avoid sending HTML; send JSON
+  }
+
+});
+app.post('/store/instant-orders', async (req, res) => {
+  const { ProductName, SKU, Quantity, UOM, AddedBy } = req.body;
+
+  if (!AddedBy) {
+      return res.status(400).json({ message: 'Store name (AddedBy) is required.' });
+  }
+
+  try {
+      const pool = await sql.connect(config);
+
+      // Insert order into the InstantOrders table
+      const insertQuery = `
+          INSERT INTO InstantOrders (ProductName, SKU, Quantity, UOM, StoreName, OrderDate)
+          VALUES (@ProductName, @SKU, @Quantity, @UOM, @StoreName, GETDATE());
+      `;
+      await pool.request()
+          .input('ProductName', sql.VarChar(255), ProductName)
+          .input('SKU', sql.VarChar(50), SKU)
+          .input('Quantity', sql.Int, Quantity)
+          .input('UOM', sql.VarChar(50), UOM)
+          .input('StoreName', sql.VarChar(255), AddedBy) // Store name field
+          .query(insertQuery);
+
+      res.status(201).json({ message: 'Instant order saved successfully.' });
+  } catch (error) {
+      console.error('Error saving instant order:', error);
+      res.status(500).json({ message: 'Error saving instant order.', error: error.message });
+  }
+});
 
 
 // Endpoint to place an order for general users
@@ -1684,3 +1724,26 @@ app.get('/generaluser/orders', async (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../my-frontend/build', 'index.html'));
 });
+
+app.get('/api/stores', async (req, res) => {
+  const query = req.query.q || '';
+  try {
+    const pool = await sql.connect(config);
+    const result = await pool
+      .request()
+      .input('search', sql.VarChar, `%${query}%`)
+      .query(
+        query
+          ? 'SELECT name FROM Stores WHERE name LIKE @search'
+          : 'SELECT name FROM Stores'
+      );
+    res.status(200).json(result.recordset); // Send JSON response
+  } catch (error) {
+    console.error('Error fetching stores:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+
